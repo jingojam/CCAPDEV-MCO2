@@ -1,10 +1,16 @@
 const express = require('express');
-const hbs = require('express-handlebars')
+const hbars = require('express-handlebars')
 const path = require('path');
 const mongoose = require('mongoose');
 
 const app = express();
 const port = 3000;
+
+// Handlebars setup
+app.engine('handlebars', hbars.engine());
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
+
 
 // MongoDB connection string        @LIAM replace this
 const mongoURI = 'mongodb://localhost:27017/mydatabase';
