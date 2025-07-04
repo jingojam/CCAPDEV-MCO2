@@ -2,22 +2,20 @@
 
 File Structure:
 
-/root
-
-  /node_modules --> autogen by npm
+root/node_modules/ --> autogen by npm
   
-  /controllers --> server business logic
+root/controllers/ --> server business logic
   
-  /routers --> route definition
+root/routers/ --> route definition
   
-  /views --> templates to render
+root/views/ --> templates to render
   
-  /views/layouts  --> base templates/html structure, etc. (existing pages here)
+root/views/layouts/  --> base templates/html structure, etc. (existing pages here)
     
-  /views/partials --> reusable components (refactor repeated code here)
+root/views/partials/ --> reusable components (refactor repeated code here)
     
-  app.js
+root/app.js
   
-  package-lock.json --> autogen by npm
+root/package-lock.json --> autogen by npm
   
-  package.json --> autogen by npm
+root/package.json --> autogen by npm
