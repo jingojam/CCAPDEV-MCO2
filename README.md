@@ -12,9 +12,9 @@ File Structure:
   
   /views --> templates to render
   
-    /layouts  --> base templates/html structure, etc. (existing pages here)
+  /views/layouts  --> base templates/html structure, etc. (existing pages here)
     
-    /partials --> reusable components (refactor repeated code here)
+  /views/partials --> reusable components (refactor repeated code here)
     
   app.js
   
