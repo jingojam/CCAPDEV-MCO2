@@ -9,6 +9,8 @@ root/controllers/ --> server business logic
 root/routers/ --> route definition
   
 root/views/ --> templates to render
+
+root/model/ --> db
   
 root/views/layouts/  --> base templates/html structure, etc. (existing pages here)
     
