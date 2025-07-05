@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{title}}</title>
+
+        <!-- PLACE STYLESHEET LINKS HERE IN MAIN.HANDLEBARS -->
+
+        <link rel="stylesheet" href="/navbar_template.css">
+
+        {{#if isHome}}
+            <link rel="stylesheet" href="/reserve_home.css">
+        {{/if}}
+
+        {{#if isCreate}}
+            <link rel="stylesheet" href="/reserve_create.css">
+        {{/if}}
+
+        {{#if isView}}
+            <link rel="stylesheet" href="/reserve_view.css">
+        {{/if}}
+
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+    
+    <body>
+
+        {{!-- Shared layout elements --}}
+        {{> navbar}}
+
+        {{!-- Specific layout elements --}}
+        {{{body}}}
+
+        <script src="/navbar_template.js"></script>
+
+    </body>
+</html>

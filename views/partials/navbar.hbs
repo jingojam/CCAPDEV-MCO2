@@ -1,0 +1,25 @@
+{{!-- This is the partial: navbar.handlebars --}}
+
+<div class="vertical-label">{{userRole}}</div>
+
+<div class="header">
+    <a href="/reserve-home" id="website_name">@LabRes</a>
+
+    <button class="dropbtn" onclick="myFunction()">
+        <img src="/resources/profile_stock.png" class="profile-pic">
+    </button>
+
+    <div class="profile-dropdown">
+        <div class="dropdown-menu" id="dropdownMenu">
+            <a href="/profile">See User Profile</a>
+            <a href="/logout">Sign Out Account</a>
+        </div>
+    </div>
+
+    <form class="search-form">
+        <input id="search-bar" type="text" placeholder="">
+        <button id="search-button" type="submit">
+            <img src="/resources/search_icon.png" class="search-icon" />
+        </button>
+    </form>
+</div>

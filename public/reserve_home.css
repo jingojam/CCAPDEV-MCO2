@@ -1,0 +1,88 @@
+
+.interFont {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+body {
+    font-family: "Inter";
+            
+    background-color:rgb(237, 237, 237);
+}
+
+
+ a {
+    display: flex;
+    text-decoration: none; 
+    color: inherit;
+    
+} 
+
+.container {
+
+    display: flex;
+
+    flex-direction: row;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 20px;
+}
+
+
+.container div {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    height: 225px;
+
+    width: 250px;
+
+    background-color: white;
+
+    border: 1.5px solid black;
+
+    border-radius: 10%;
+
+}
+
+.container img {
+
+    height: 100px;
+
+    width: 120px;
+
+    pointer-events: none;
+}
+
+.container div:hover {
+
+    color: white;
+
+    background-color:steelblue;
+
+}
+
+.container a :hover img{
+
+    filter: brightness(0) invert(1);
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+}
+
+
+
+
+
+
