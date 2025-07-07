@@ -4,7 +4,7 @@
   <div class="create_options">
     <a href="/">
       <div id="option_1">
-        <p>&lt; Return to Home</p>
+        <p>< Return to Home</p>
       </div>
     </a>
   </div>
@@ -13,15 +13,32 @@
     <div class="reservations-section" id="current-reservations-section">
       <h1>My Reservations</h1>
       <h3>Current Reservations</h3>
-      <!-- Reservation rows will be injected here by JS -->
+
+      {{#each currentReservations}}
+        <div class="reservation-row current" role="button" tabindex="0" onclick="_"> 
+          <span class="date">{{date}}</span>                <!-- Replace onclick -->
+          <span class="divider"></span>
+          <span class="time">{{time}}</span>
+          <span class="laboratory">{{laboratory}}</span>
+          <span class="seat">{{seat}}</span>
+        </div>
+      {{/each}}
 
     </div>
 
     <div class="reservations-section" id="completed-reservations-section">
       <h3>Completed Reservations</h3>
-      <!-- Reservation rows will be injected here by JS -->
+
+      {{#each completedReservations}}
+        <div class="reservation-row completed" role="button" tabindex="0" onclick="_"> 
+          <span class="date">{{date}}</span>                <!-- Replace onclick -->
+          <span class="divider"></span>
+          <span class="time">{{time}}</span>
+          <span class="laboratory">{{laboratory}}</span>
+          <span class="seat">{{seat}}</span>
+        </div>
+      {{/each}}
+
     </div>
   </div>
 </div>
-
-<script src="/reserve_view.js"></script>

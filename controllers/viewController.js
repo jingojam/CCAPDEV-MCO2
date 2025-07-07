@@ -6,3 +6,6 @@ exports.renderViewPage = (req, res) => {
   });
 };
 
+// Route list of reservations
+
+
