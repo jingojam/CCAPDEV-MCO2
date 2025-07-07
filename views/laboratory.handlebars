@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>{{title}}</title>
+    </head>
+    <body>        
+        <div class="container">
+            <div class="create_options">
+
+                <a href="/create"><div id="option_1">
+                    <p>< Return to Filter Reservations</p>
+                
+                </div></a>
+            </div>
+            
+            <div class="create_content">
+
+                <h1>{{labname}}</h1>
+
+                <div class="reserve-info">
+                    <div class="date-prompt">
+                        <form>
+                            <h3>Choose a date:</h3>
+                            <select name="Days" id="Days">
+                                {{#each days}}
+                                    <option value="{{this}}">{{this}}</option>
+                                {{/each}}
+                            </select>
+                            <h3>Choose start time:</h3>
+                            <select name="Hours" id="Hours">
+                                {{#each startTimes}}
+                                    <option value="{{this}}">{{this}}</option>
+                                {{/each}}
+                            </select>
+                            <h3>Select end hours</h3>
+                            <select name="EndHours" id="EndHours">
+                                {{#each endTimes}}
+                                    <option value="{{this}}">{{this}}</option>
+                                {{/each}}
+                            </select>
+                        </form>
+
+                        <div class="anonymous-option">
+                            <label>
+                                <input type="checkbox" id="anonymous" name="anonymous">
+                                Reserve anonymously
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="seat-table">
+                        <table id="reservation-table" class="reservation-table">
+                            <thead>
+                                <tbody>
+                                    {{#each seats}}
+                                        <tr>
+                                            <td>{{this.seatNumber}}</td>
+                                            <td>{{this.vacancy}}</td>
+                                            <td><button class="reserve-lab">{{this.reserveText}}</button></td>
+                                        </tr>
+                                    {{/each}}
+                                </tbody>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="reserve_create.js"></script>
+    </body>
+</html>

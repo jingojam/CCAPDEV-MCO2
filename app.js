@@ -22,51 +22,40 @@ app.set('views', path.join(__dirname, 'views'));
 const mongoURI = 'mongodb://localhost:27017/mydatabase';
 
 // Connect to MongoDB
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+
+// DEPRECATED
+// mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+//   .then(() => console.log('Connected to MongoDB'))
+//   .catch(err => console.error('MongoDB connection error:', err));
 
 
 
 // Serve static files from /public
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
 // Route: CSS
 
+// import routers
+const homeRoute = require('./routers/homeRouter.js');
+const viewRoute = require('./routers/viewRouter.js');
+const createRoute = require('./routers/createRouter.js');
+const labRoute = require('./routers/labRouter.js');
+
 // Home Reservation Page
-app.get('/', (req, res) => {
-  res.render('home', {
-    title: 'Home Page',
-    userRole: 'STUDENT',
-    isHome: true
-  });
-});
+app.use('/', homeRoute);
 
 // Create Reservation Page
-app.get('/create', (req, res) => {
-  res.render('create', {
-    title: 'Create Reservation',
-    userRole: 'STUDENT',
-    isCreate: true
-  });
-});
+app.use('/create', createRoute);
 
 // View Reservations Page
-app.get('/view', (req, res) => {
-  res.render('view', {
-    title: 'View Reservations',
-    userRole: 'STUDENT',
-    isView: true
-  });
-});
+app.use('/view', viewRoute);
+
+// Lab page
+app.use('/laboratory', labRoute);
 
 
-
-
-
-
+const index = require('./routers/indexRouter.js');
+app.use('/index', index);
 
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div class="container">
+            <div class="create_options">
+                <a href="/"><div id="option_1">
+                    <p>&lt; Return to Home</p>
+                </div></a>
+            </div>
+            <div class="create_content">
+                <div class="date-section">
+                    <form>
+                        <div>
+                            <h3>Choose a date:</h3>
+                            <select name="Days" id="Days">
+                                {{#each days}}
+                                    <option value="{{this}}">{{this}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div>
+                            <h3>Select start time:</h3>
+                            <select name="Hours" id="Hours">
+                                <option value="">Choose start time</option>
+                                {{#each startTimes}}
+                                    <option value="{{this.value}}">{{this.label}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div>
+                            <h3>Select end hours</h3>
+                            <select name="EndHours" id="EndHours">
+                                <option value="">Choose end time</option>
+                                {{#each endTimes}}
+                                    <option value="{{this.value}}">{{this.label}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="labs_section">
+                    {{#each laboratories}}
+                        <a href="{{this.link}}" class="Labs">
+                            <h3>{{this.name}}</h3>
+                            <h3>{{this.occupancy}}</h3>
+                        </a>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
