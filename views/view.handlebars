@@ -15,7 +15,9 @@
       <h3>Current Reservations</h3>
 
       {{#each currentReservations}}
-        <div class="reservation-row current" role="button" tabindex="0" onclick="_"> 
+        <div class="reservation-row current" role="button" tabindex="0" 
+        onclick="location.href='/res_edit'">
+         
           <span class="date">{{date}}</span>                <!-- Replace onclick -->
           <span class="divider"></span>
           <span class="time">{{time}}</span>
@@ -30,7 +32,9 @@
       <h3>Completed Reservations</h3>
 
       {{#each completedReservations}}
-        <div class="reservation-row completed" role="button" tabindex="0" onclick="_"> 
+        <div class="reservation-row completed" role="button" tabindex="0"
+          onclick="location.href='/res_info'">
+
           <span class="date">{{date}}</span>                <!-- Replace onclick -->
           <span class="divider"></span>
           <span class="time">{{time}}</span>

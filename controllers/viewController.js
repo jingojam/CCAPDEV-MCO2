@@ -19,35 +19,35 @@ exports.renderViewPage = (req, res) => {
 
     currentReservations: [
       {
-        date: "07 / 07 / 2025",
-        time: "10:00 - 11:00",
-        laboratory: "Laboratory A1",
-        seat: "Seat 01",
-        requestDate: "07 / 06 / 2025 09:30"
+        date: "xx / xx / xxxx",
+        time: "XX:00 - XX:00",
+        laboratory: "Laboratory XX",
+        seat: "Seat XX",
+        requestDate: "XX / XX / XXXX XX:00"
       },
       {
-        date: "07 / 08 / 2025",
-        time: "14:00 - 15:00",
-        laboratory: "Laboratory B2",
-        seat: "Seat 12",
-        requestDate: "07 / 07 / 2025 08:45"
+        date: "xx / xx / xxxx",
+        time: "XX:00 - XX:00",
+        laboratory: "Laboratory XX",
+        seat: "Seat XX",
+        requestDate: "XX / XX / XXXX XX:00"
       }
     ],
 
     completedReservations: [
       {
-        date: "06 / 20 / 2025",
-        time: "09:00 - 10:00",
-        laboratory: "Laboratory C3",
-        seat: "Seat 22",
-        requestDate: "06 / 18 / 2025 12:00"
+        date: "xx / xx / xxxx",
+        time: "XX:00 - XX:00",
+        laboratory: "Laboratory XX",
+        seat: "Seat XX",
+        requestDate: "XX / XX / XXXX XX:00"
       },
       {
-        date: "06 / 15 / 2025",
-        time: "13:00 - 14:30",
-        laboratory: "Laboratory D4",
-        seat: "Seat 08",
-        requestDate: "06 / 13 / 2025 14:10"
+        date: "xx / xx / xxxx",
+        time: "XX:00 - XX:00",
+        laboratory: "Laboratory XX",
+        seat: "Seat XX",
+        requestDate: "XX / XX / XXXX XX:00"
       }
     ]
   });
