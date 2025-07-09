@@ -1,0 +1,54 @@
+
+<div class="container">
+  <div class="create_options">
+    <a href="/view">
+      <div id="option_1">
+        <p>< Return to View Reservations</p>
+      </div>
+    </a>
+  </div>
+
+  <div class="create_content">
+    <div id="reservation-details-container">
+      <form>
+        <!-- Date -->
+        <div class="detail-item">
+          <label class="detail-label">Date of reservation:</label>
+          <div class="detail-value">
+            <input type="text" id="detail-date" value="{{selectedDate}}" readonly>
+          </div>
+        </div>
+
+        <!-- Time -->
+        <div class="detail-item">
+          <label class="detail-label">Time of reservation:</label>
+          <div class="detail-value">
+            <input type="text" id="detail-time" value="{{selectedTime}}" readonly>
+          </div>
+        </div>
+
+        <!-- Laboratory -->
+        <div class="detail-item">
+          <label class="detail-label">Selected Laboratory:</label>
+          <div class="detail-value">
+            <input type="text" id="detail-lab" value="{{selectedLab}}" readonly>
+          </div>
+        </div>
+
+        <!-- Seat -->
+        <div class="detail-item">
+          <label class="detail-label">Selected seat number:</label>
+          <div class="detail-value">
+            <input type="text" id="detail-seat" value="{{selectedSeat}}" readonly>
+          </div>
+        </div>
+      </form>
+
+      <!-- Request Time -->
+      <p class="time" style="font-style: italic;">
+        <strong class="date-label">Date and Time of Request:</strong>
+        <span id="request-time" style="font-style: italic;">{{requestTime}}</span>
+      </p>
+    </div>
+  </div>
+</div>

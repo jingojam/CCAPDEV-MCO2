@@ -109,6 +109,8 @@ a {
   transition: background-color 0.3s ease;
   width: 100%;
   box-sizing: border-box;
+
+  cursor: pointer;
 }
 
 .reservation-row:hover {
