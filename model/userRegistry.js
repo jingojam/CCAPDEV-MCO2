@@ -26,7 +26,11 @@ const userSchema = new mongoose.Schema ({
         // this regex is assuming gmail.com is valid too (just remove if ever)
         match: /^[a-zA-Z0-9._%+-]+@(dlsu\.edu\.ph|gmail\.com)$/
     },
-
+    password: {
+        type: String,
+        required: true,
+    },
+    
     descrption: {
         type: String,
         default: ''
