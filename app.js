@@ -51,6 +51,9 @@ const viewRoute = require('./routers/viewRouter.js');
 const resEditRoute = require('./routers/res_editRouter.js');
 const resInfoRoute = require('./routers/res_infoRouter.js');
 
+const profInfoRoute = require('./routers/prof_infoRouter.js');
+const profEditRoute = require('./routers/prof_editRouter.js');
+
 const index = require('./routers/indexRouter.js');
 
 
@@ -71,6 +74,12 @@ app.use('/res_edit', resEditRoute);
 
 // Info Reservation Page
 app.use('/res_info', resInfoRoute);
+
+// Profile Info Page
+app.use('/prof_info', profInfoRoute);
+
+// Profile Edit Page
+app.use('/prof_edit', profEditRoute);
 
 
 app.use('/index', index);
