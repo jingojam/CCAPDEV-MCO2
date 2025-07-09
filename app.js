@@ -51,6 +51,10 @@ app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Register.html'));
 });
 
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Login.html'));
+});
+
 app.post('/register', async (req, res) => {
   try {
     const { fname, lname, role, DLSUemail, password } = req.body;
@@ -65,21 +69,17 @@ app.post('/register', async (req, res) => {
       last_name: lname,
       email: DLSUemail,
       role,
-      password_hash: password 
+      password: password 
     });
 
     await newUser.save();
-    res.send('User registered successfully.');
+     res.redirect('auth_ref/Login.html');
   } catch (err) {
     console.error('Registration error:', err);
     res.status(500).send('Registration failed.');
   }
 });
 
-// Login page rendered with Handlebars
-app.get('/login', (req, res) => {
-  res.render('auth_ref/Login');
-});
 
 // Routers
 const homeRoute = require('./routers/homeRouter.js');
