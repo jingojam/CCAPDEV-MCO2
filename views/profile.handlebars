@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile - {{firstName lastName}}</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../reservations/navbar_template.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <div class="create_options">
+            <a href="/home">
+                <div id="option_1">
+                    <p>&lt; Return to Home</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- NEW WRAPPER FOR FLEX ROW -->
+        <div class="profile-reservations-wrapper">
+
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <div class="profile-info">
+                    <img src="{{profile_image}}" alt="Header Profile Picture" class="profile-pic">
+                    <h1>{{user.name}}</h1>
+                    <div class="description-box">
+                        <p>{{user.description}}</p>
+                    </div>
+                </div>
+
+                <div class="manage-profile">
+                    <button id="edit-button" class="button">Edit Profile</button>
+                </div>
+            </div>
+
+            <!-- Reservations Section -->
+            <div class="reservations-info">
+                <h1>Current Reservations</h1>
+                <table class="reservation-table">
+                    <thead>
+                        <tr>
+                            <th>Laboratory</th>
+                            <th>Seat</th>
+                            <th>Date & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each reservations}}
+                        <tr>
+                            <td>{{this.laboratory}}</td>
+                            <td>{{this.seat}}</td>
+                            <td>{{this.datetime}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

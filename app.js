@@ -32,15 +32,25 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // MongoDB connection string
-const mongoURI = 'mongodb://localhost:27017/mydatabase';
+const mongoURI = 'mongodb://localhost:27017/mco2DB';
 
-// (DEPRECATED) Connect to MongoDB 
-// mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-//   .then(() => console.log('Connected to MongoDB'))
-//   .catch(err => console.error('MongoDB connection error:', err));
+const generateLabs = require('./controllers/seed');
+
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(async () => {
+    console.log('Connected to MongoDB');
+    await generateLabs();
+  })
+  .catch(err => console.error('MongoDB connection error:', err));
 
 
+app.get('/register', (req, res) => {
+  res.render('authRef/Register');
+});
 
+app.get('/login', (req, res) => {
+  res.render('authRef/Login');
+});
 // Import routers
 const homeRoute = require('./routers/homeRouter.js');
 
