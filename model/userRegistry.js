@@ -13,11 +13,6 @@ const userSchema = new mongoose.Schema ({
         trim: true 
     },
 
-    email: {
-        type: String,
-        required: true
-    },
-
     role: {
         type: String,
         enum: ['Technician', 'Student'],
@@ -30,11 +25,6 @@ const userSchema = new mongoose.Schema ({
         unique: true,
         // this regex is assuming gmail.com is valid too (just remove if ever)
         match: /^[a-zA-Z0-9._%+-]+@(dlsu\.edu\.ph|gmail\.com)$/
-    },
-
-    password_hash: {
-        type: String,
-        required: true
     },
 
     descrption: {
