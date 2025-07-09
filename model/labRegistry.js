@@ -10,9 +10,9 @@ const labSchema = new mongoose.Schema({
         required: true
     },
 
-    lab_sched: {
+    lab_sched: [{
         type: Date
-    },
+    }],
 
     lab_url: {
         type: String

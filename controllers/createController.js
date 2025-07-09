@@ -3,7 +3,7 @@ const Lab = require('../model/labRegistry');
 exports.renderCreatePage = async (req, res) => {
   try {
     const labs = await Lab.find();
-
+    
     const laboratories = labs.map((lab) => {
         var occupied = 0;
 
@@ -17,7 +17,7 @@ exports.renderCreatePage = async (req, res) => {
 
         return {
           name: lab.lab_name,
-          sched: lab.lab_sched?.toDateString(),
+          sched: lab.lab_sched?.map(d => new Date(d).toDateString()),
           occupancy: `${occupied} / ${total} occupied`,
           link: lab.lab_url
         };
