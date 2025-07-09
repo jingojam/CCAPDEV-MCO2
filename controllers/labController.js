@@ -12,7 +12,7 @@ exports.renderLabPage = async (req, res) => {
 
     res.render('laboratory', {
       labname: lab.lab_name,
-      
+      days: lab.lab_sched?.map(d => new Date(d).toDateString())
     })
   } catch (error) {
     console.error('Error loading labs:', error);
