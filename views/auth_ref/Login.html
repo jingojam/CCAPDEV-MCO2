@@ -21,7 +21,7 @@
             <div class="register">
               <br><br>
                 <h1>Log In</h1><br>
-                <form id="loginForm">
+                <form id="loginForm" method="POST" action="/Login">
                 <h3>DLSU Email</h3><br>
                 <input type="email" name="DLSUemail" placeholder="DLSU Email"><br><br>
 
@@ -39,18 +39,7 @@
         </div>
 
 <script>
-  // === REDIRECT BASED ON USER ROLE (MOVED OUTSIDE) ===
-  function roleredirect(user) {
-    if (user.role === "Technician") {
-      console.log("Redirecting to Technician page");
-      window.location.href = "../../LABTECH/reservations/reserve_home.html";
-    } else {
-      console.log("Redirecting to Student page");
-      window.location.href = "../reservations/reserve_home.html";
-    }
-  }
-
-  // === AUTO-LOGIN & FORM RESTORE LOGIC ===
+  // === RESTORE FORM IF REMEMBERED ===
   window.addEventListener("pageshow", () => {
     const remembered = localStorage.getItem("rememberedUser");
     if (!remembered) return;
@@ -58,89 +47,41 @@
     try {
       const { email, password, expiresAt } = JSON.parse(remembered);
 
+      // If expired, clear and exit
       if (new Date() > new Date(expiresAt)) {
         localStorage.removeItem("rememberedUser");
         return;
       }
 
-      const storedUsersJSON = localStorage.getItem("users");
-      if (!storedUsersJSON) return;
-
-      const storedUsers = JSON.parse(storedUsersJSON);
-      const user = storedUsers[email];
-
-      if (!user || user.password !== password) {
-        localStorage.removeItem("rememberedUser");
-        return;
-      }
-
-      // Save current user
-      localStorage.setItem("thisUser", JSON.stringify(user));
-
-      // Auto-fill form
+      // Auto-fill the form
       document.querySelector("input[name='DLSUemail']").value = email;
       document.querySelector("input[name='password']").value = password;
       document.getElementById("remember").checked = true;
-
-      // Redirect
-      roleredirect(user); // Pass actual user object
-
     } catch (e) {
-      console.error("Error restoring session:", e);
+      console.error("Error restoring remembered credentials:", e);
       localStorage.removeItem("rememberedUser");
     }
   });
 
-  // === HANDLE FORM SUBMIT ===
-  const form = document.querySelector("#loginForm");  
-  if (!form) {
-    console.error("Login form not found!");
-  } else {
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
+  // === SAVE TO REMEMBERED USER ON SUBMIT ===
+  const form = document.querySelector("#loginForm");
+  form.addEventListener("submit", function () {
+    const email = document.querySelector("input[name='DLSUemail']").value.trim();
+    const password = document.querySelector("input[name='password']").value.trim();
+    const remember = document.getElementById("remember").checked;
 
-      const emailInput = document.querySelector("input[name='DLSUemail']");
-      const passwordInput = document.querySelector("input[name='password']");
-      const rememberCheckbox = document.getElementById("remember");
-
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-
-      const storedUsersJSON = localStorage.getItem("users");
-      if (!storedUsersJSON) {
-        alert("No registered users found. Please register first.");
-        return;
-      }
-
-      const storedUsers = JSON.parse(storedUsersJSON);
-      const user = storedUsers[email];
-
-      if (!user || user.password !== password) {
-        alert("Invalid email or password.");
-        return;
-      }
-
-      // Save current user
-      localStorage.setItem("thisUser", JSON.stringify(user));
-
-      // Handle "Remember Me"
-      if (rememberCheckbox.checked) {
-        const now = new Date();
-        const expiresAt = new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000); // 3 weeks
-
-        localStorage.setItem("rememberedUser", JSON.stringify({
-          email,
-          password,
-          expiresAt: expiresAt.toISOString()
-        }));
-      } else {
-        localStorage.removeItem("rememberedUser");
-      }
-
-      // Redirect after login
-      roleredirect(user); // Use actual user object, NOT string
-    });
-  }
+    if (remember) {
+      const expiresAt = new Date(Date.now() + 21 * 24 * 60 * 60 * 1000); // 3 weeks
+      localStorage.setItem("rememberedUser", JSON.stringify({
+        email,
+        password,
+        expiresAt: expiresAt.toISOString()
+      }));
+    } else {
+      localStorage.removeItem("rememberedUser");
+    }
+  });
 </script>
+
     </body>
 </html>

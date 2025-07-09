@@ -51,7 +51,7 @@ document.querySelector("form").addEventListener("submit", function(event) {
 
 
     // Redirect to testsite/Login
-    window.location.href = "Login.html";
+   // window.location.href = "Login.html";
 
     function isvalidDLSUemail(email)
     {

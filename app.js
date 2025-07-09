@@ -55,6 +55,7 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Login.html'));
 });
 
+//===== Register and LOGIN===========
 app.post('/register', async (req, res) => {
   try {
     const { fname, lname, role, DLSUemail, password } = req.body;
@@ -69,18 +70,37 @@ app.post('/register', async (req, res) => {
       last_name: lname,
       email: DLSUemail,
       role,
-      password: password 
+      password 
     });
 
     await newUser.save();
-     res.redirect('auth_ref/Login.html');
+     res.redirect('auth_ref/Login.html');         
   } catch (err) {
     console.error('Registration error:', err);
     res.status(500).send('Registration failed.');
   }
 });
 
-
+app.post('/Login', async (req, res) => {
+  try {
+    const { DLSUemail, password } = req.body;
+    // Find user by email
+    const user = await User.findOne({ email: DLSUemail });
+    if (!user) {
+      return res.status(401).send('No account found with that email.');
+    }
+    // Compare password
+    if (user.password !== password) {
+      return res.status(401).send('Incorrect password.');
+    }
+    // Test if success
+    return res.redirect('/prof_info');
+    
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).send('Login failed.');
+  }
+});
 // Routers
 const homeRoute = require('./routers/homeRouter.js');
 const createRoute = require('./routers/createRouter.js');
