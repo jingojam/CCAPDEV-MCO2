@@ -10,11 +10,12 @@ async function generateLabs(){
 
     for(let i = 0; i < 5; i++){ // 5 labs only
         labs.push({
+            lab_id: i + 1,
             lab_name: "Laboratory " + i.toString() + String.fromCharCode('A'.charCodeAt(0) + i),
             lab_description: `Description for Lab ${i}`,
             lab_sched: new Date(`2025-07-${10 + i}T09:00:00`), // spaced dates
-            lab_url: `http://localhost:3000/views/${i + 1}`,
-            seats: Array.from({ length: 10 }, (_, j) => ({
+            lab_url: `http://localhost:3000/laboratory/${i+1}`,
+            seats: Array.from({ length: 35 }, (_, j) => ({
                 seat_num: j + 1
             }))
         })

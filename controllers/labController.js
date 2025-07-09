@@ -1,7 +1,21 @@
-exports.renderLabPage = (req, res) => {
-  res.render('laboratory', {
-    title: 'Lab x',
-    userRole: 'STUDENT',
-    isHome: false
-  });
+const Lab = require('../model/labRegistry');
+
+exports.renderLabPage = async (req, res) => {
+  try{
+    const id = req.params.id;
+    const lab = await Lab.findOne({lab_id: id});
+
+    if(!lab){
+      res.status(404).send(`/laboratory/:${id} Not Found.`);
+      return;
+    }
+
+    res.render('laboratory', {
+      labname: lab.lab_name,
+      
+    })
+  } catch (error) {
+    console.error('Error loading labs:', error);
+    res.status(500).send('Internal Server Error');
+  }
 };

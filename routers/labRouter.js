@@ -3,7 +3,7 @@ const labRouter = express.Router();
 
 const labController = require('../controllers/labController');
 
-labRouter.get('/', labController.renderLabPage);
+labRouter.get('/:id', labController.renderLabPage);
 
 // post for reservation logic
 

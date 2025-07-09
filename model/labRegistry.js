@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const labSchema = new mongoose.Schema({
+    lab_id: {
+        type: Number
+    },
+
     lab_name: {
         type: String, 
         required: true
