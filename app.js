@@ -2,7 +2,7 @@ const express = require('express');
 const hbars = require('express-handlebars');
 const path = require('path');
 const mongoose = require('mongoose');
-
+//TODO: Fix prof_info
 const app = express();
 const port = 3000;
 
