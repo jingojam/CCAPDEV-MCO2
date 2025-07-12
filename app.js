@@ -68,6 +68,32 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Login.html'));
 });
 
+// Routers
+const homeRoute = require('./routers/homeRouter.js');
+const createRoute = require('./routers/createRouter.js');
+const labRoute = require('./routers/labRouter.js');
+const viewRoute = require('./routers/viewRouter.js');
+const resEditRoute = require('./routers/res_editRouter.js');
+const resInfoRoute = require('./routers/res_infoRouter.js');
+const profInfoRoute = require('./routers/prof_infoRouter.js'); // added
+const profEditRoute = require('./routers/prof_editRouter.js');
+const index = require('./routers/indexRouter.js');
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Welcome.html'));
+});
+
+// Mount routers
+app.use('/home', homeRoute);
+app.use('/create', createRoute);
+app.use('/laboratory', labRoute);
+app.use('/view', viewRoute);
+app.use('/res_edit', resEditRoute);
+app.use('/res_info', resInfoRoute);
+app.use('/prof_info', profInfoRoute); //added
+app.use('/prof_edit', profEditRoute);
+app.use('/index', index);
+
 // POST: Register
 app.post('/register', async (req, res) => {
   try {
@@ -102,41 +128,12 @@ app.post('/Login', async (req, res) => {
     if (user.password !== password) return res.status(401).send('Incorrect password.');
 
     console.log(`Redirecting to /prof_info?userId=${user._id}`);
-    res.redirect(`/prof_info?userId=${user._id}`);
+    res.redirect(`/home`);
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).send('Login failed.');
   }
 });
-
-
-
-// Routers
-const homeRoute = require('./routers/homeRouter.js');
-const createRoute = require('./routers/createRouter.js');
-const labRoute = require('./routers/labRouter.js');
-const viewRoute = require('./routers/viewRouter.js');
-const resEditRoute = require('./routers/res_editRouter.js');
-const resInfoRoute = require('./routers/res_infoRouter.js');
-const profInfoRoute = require('./routers/prof_infoRouter.js'); // added
-const profEditRoute = require('./routers/prof_editRouter.js');
-const index = require('./routers/indexRouter.js');
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Welcome.html'));
-});
-
-
-// Mount routers
-app.use('/', homeRoute);
-app.use('/create', createRoute);
-app.use('/laboratory', labRoute);
-app.use('/view', viewRoute);
-app.use('/res_edit', resEditRoute);
-app.use('/res_info', resInfoRoute);
-app.use('/prof_info', profInfoRoute); //added
-app.use('/prof_edit', profEditRoute);
-app.use('/index', index);
 
 // Start server
 app.listen(port, () => {
