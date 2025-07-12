@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema ({
 
     profile_pic_url: {
         type: String,
-        default: '/public/resources/profile_stock.png'
+        default: '/resources/profile_stock.png'
     },
 
     lab_reservations: [{

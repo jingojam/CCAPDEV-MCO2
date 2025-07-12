@@ -15,29 +15,43 @@ function setDates(){
     return dates;
 }
 
-async function generateLabs(){
-    const labs = [];
-
-    for(let i = 0; i < 5; i++){ // 5 labs only
-        labs.push({
-            lab_id: i + 1,
-            lab_name: "Laboratory " + i.toString() + String.fromCharCode('A'.charCodeAt(0) + i),
-            lab_description: `Description for Lab ${i}`,
-            lab_sched: setDates(), // spaced dates
-            lab_url: `http://localhost:3000/laboratory/${i+1}`,
-            seats: Array.from({ length: 35 }, (_, j) => ({
-                seat_num: j + 1
-            }))
-        })
+async function generateLabs() {
+    // Generate lab names that will be used as identifiers
+    const labNames = [];
+    for (let i = 0; i < 5; i++) {
+        labNames.push("Laboratory " + (i + 1).toString() + String.fromCharCode('A'.charCodeAt(0) + i));
     }
 
-    
-
     try {
+        // Check if any of these labs already exist
+        const existingLabs = await Lab.find({ lab_name: { $in: labNames } });
+
+        if (existingLabs.length > 0) {
+            console.log('⚠️ Labs already exist. Skipping insertion.');
+            return;
+        }
+
+        // Proceed to create labs
+        const labs = [];
+
+        for (let i = 0; i < 5; i++) {
+            labs.push({
+                lab_id: i + 1,
+                lab_name: "Laboratory " + (i + 1).toString() + String.fromCharCode('A'.charCodeAt(0) + i),
+                lab_description: `Description for Lab ${i+1}`,
+                lab_sched: setDates(),
+                lab_url: `http://localhost:3000/laboratory/${i+1}`,
+                seats: Array.from({ length: 35 }, (_, j) => ({
+                    seat_num: j + 1
+                }))
+            });
+        }
+
         await Lab.insertMany(labs);
-        console.log('success');
+        console.log('✅ Labs inserted successfully!');
+
     } catch (err) {
-        console.error('error: ', err);
+        console.error('❌ Error inserting labs:', err);
     }
 }
 
