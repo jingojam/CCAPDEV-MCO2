@@ -34,14 +34,16 @@ app.use('/auth_ref', express.static(path.join(__dirname, 'views', 'auth_ref')));
 const mongoURI = 'mongodb://localhost:27017/mco2DB';
 const generateLabs = require('./controllers/seed');
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoURI)
   .then(async () => {
-    console.log('Connected to MongoDB');
-    if(!generateLabs){
-      await generateLabs();
-    }
+    console.log('✅ Connected to MongoDB');
+    await generateLabs();
+    
+
   })
-  .catch(err => console.error('MongoDB connection error:', err));
+  .catch(err => {
+    console.error('❌ MongoDB connection error:', err);
+  });
 
 const User = require('./model/userRegistry');
 

@@ -19,7 +19,7 @@ async function generateLabs() {
     // Generate lab names that will be used as identifiers
     const labNames = [];
     for (let i = 0; i < 5; i++) {
-        labNames.push("Laboratory " + i.toString() + String.fromCharCode('A'.charCodeAt(0) + i));
+        labNames.push("Laboratory " + (i + 1).toString() + String.fromCharCode('A'.charCodeAt(0) + i));
     }
 
     try {
@@ -37,8 +37,8 @@ async function generateLabs() {
         for (let i = 0; i < 5; i++) {
             labs.push({
                 lab_id: i + 1,
-                lab_name: "Laboratory " + i.toString() + String.fromCharCode('A'.charCodeAt(0) + i),
-                lab_description: `Description for Lab ${i}`,
+                lab_name: "Laboratory " + (i + 1).toString() + String.fromCharCode('A'.charCodeAt(0) + i),
+                lab_description: `Description for Lab ${i+1}`,
                 lab_sched: setDates(),
                 lab_url: `http://localhost:3000/laboratory/${i+1}`,
                 seats: Array.from({ length: 35 }, (_, j) => ({
