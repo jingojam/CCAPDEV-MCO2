@@ -52,6 +52,22 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Login.html'));
 });
 
+
+// Welcome Page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Welcome.html'));
+});
+
+// GET:Register
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Register.html'));
+});
+
+// GET: Login
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Login.html'));
+});
+
 // POST: Register
 app.post('/register', async (req, res) => {
   try {
@@ -93,6 +109,8 @@ app.post('/Login', async (req, res) => {
   }
 });
 
+
+
 // Routers
 const homeRoute = require('./routers/homeRouter.js');
 const createRoute = require('./routers/createRouter.js');
@@ -103,6 +121,11 @@ const resInfoRoute = require('./routers/res_infoRouter.js');
 const profInfoRoute = require('./routers/prof_infoRouter.js'); // added
 const profEditRoute = require('./routers/prof_editRouter.js');
 const index = require('./routers/indexRouter.js');
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Welcome.html'));
+});
+
 
 // Mount routers
 app.use('/', homeRoute);
