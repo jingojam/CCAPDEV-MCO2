@@ -1,5 +1,3 @@
-{{!-- This is the partial: navbar.handlebars --}}
-
 <div class="vertical-label">{{userRole}}</div>
 
 <div class="header">
@@ -11,7 +9,7 @@
 
     <div class="profile-dropdown">
         <div class="dropdown-menu" id="dropdownMenu">
-            <a href="/prof_info?userId={{user._id}}">See User Profile</a>
+            <a id="profile-link">See User Profile</a>
             <a href="/logout">Sign Out Account</a>
         </div>
     </div>
@@ -23,3 +21,12 @@
         </button>
     </form>
 </div>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get('userId');
+  if (userId) {
+    const profileLink = document.getElementById('profile-link');
+    profileLink.href = `/prof_info/${userId}`;
+  }
+</script>
