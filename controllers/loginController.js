@@ -16,7 +16,7 @@ exports.loginUser = async (req, res) => {
     if (user.password !== password) return res.status(401).send('Incorrect password.');
 
     console.log(`Redirecting to /prof_info?userId=${user._id}`);
-    res.redirect(`/home`);
+    res.redirect(`/home?userId=${user._id}`);
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).send('Login failed.');
