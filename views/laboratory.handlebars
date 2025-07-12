@@ -62,3 +62,35 @@
             </div>
         </div>
     </body>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    let selectedDate = null;
+    let selectedStartTime = null;
+    let selectedEndTime = null;
+
+    const daysEl = document.getElementById('Days');
+    const hoursEl = document.getElementById('Hours');
+    const endHoursEl = document.getElementById('EndHours');
+
+    if (!daysEl || !hoursEl || !endHoursEl) {
+      console.warn("One or more dropdowns not found");
+      return;
+    }
+
+    daysEl.addEventListener('change', function () {
+      selectedDate = this.value;
+      console.log("Selected date:", selectedDate);
+    });
+
+    hoursEl.addEventListener('change', function () {
+      selectedStartTime = this.value;
+      console.log("Selected start time:", selectedStartTime);
+    });
+
+    endHoursEl.addEventListener('change', function () {
+      selectedEndTime = this.value;
+      console.log("Selected end time:", selectedEndTime);
+    });
+  });
+</script>
