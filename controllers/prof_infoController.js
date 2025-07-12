@@ -9,7 +9,7 @@ exports.renderInfoPage = async (req, res) => {
       return res.status(400).send('Missing userId in query');
     }
 
-    const user = await User.findById(userId); // or whatever your DB uses
+    const user = await User.findById(userId).lean(); // or whatever your DB uses
     const reservations = await Reservation.find({ user: userId });
 
     res.render('prof_info', {

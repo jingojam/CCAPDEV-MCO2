@@ -22,7 +22,8 @@ exports.renderCreatePage = async (req, res) => {
           name: lab.lab_name,
           sched: lab.lab_sched?.map(d => new Date(d).toDateString()),
           occupancy: `${occupied} / ${total} occupied`,
-          link: lab.lab_url
+          labId: lab.lab_id,
+          user
         };
     });
 
