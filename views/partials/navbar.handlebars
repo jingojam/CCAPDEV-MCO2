@@ -27,6 +27,6 @@
   const userId = urlParams.get('userId');
   if (userId) {
     const profileLink = document.getElementById('profile-link');
-    profileLink.href = `/prof_info/${userId}`;
+    profileLink.href = `/prof_info?userId=${userId}`;
   }
 </script>

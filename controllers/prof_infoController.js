@@ -1,7 +1,7 @@
 const User = require('../model/userRegistry'); // adjust path as needed
 const Reservation = require('../model/labRegistry'); // adjust path
 
-exports.renderEditPage = async (req, res) => {
+exports.renderInfoPage = async (req, res) => {
   try {
     const userId = req.query.userId;
 

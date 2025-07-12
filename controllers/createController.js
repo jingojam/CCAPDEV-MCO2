@@ -1,9 +1,12 @@
 const Lab = require('../model/labRegistry');
+const User = require('../model/userRegistry');
 
 exports.renderCreatePage = async (req, res) => {
   try {
     const labs = await Lab.find();
-    
+    const userId = req.query.userId;
+    const user = await User.findById(userId).lean();
+
     const laboratories = labs.map((lab) => {
         var occupied = 0;
 
@@ -46,6 +49,7 @@ exports.renderCreatePage = async (req, res) => {
       title: 'Create Reservation',
       userRole: 'STUDENT',
       isCreate: true,
+      user,
       days,
       startTimes,
       endTimes,
