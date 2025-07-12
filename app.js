@@ -79,9 +79,6 @@ const profInfoRoute = require('./routers/prof_infoRouter.js'); // added
 const profEditRoute = require('./routers/prof_editRouter.js');
 const index = require('./routers/indexRouter.js');
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Welcome.html'));
-});
 
 // Mount routers
 app.use('/home', homeRoute);
@@ -127,13 +124,14 @@ app.post('/Login', async (req, res) => {
     if (!user) return res.status(401).send('No account found.');
     if (user.password !== password) return res.status(401).send('Incorrect password.');
 
-    console.log(`Redirecting to /prof_info?userId=${user._id}`);
-    res.redirect(`/home`);
+    console.log(`Redir to home`);
+    res.redirect(`/home?userId=${user._id}`);
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).send('Login failed.');
   }
 });
+
 
 // Start server
 app.listen(port, () => {
