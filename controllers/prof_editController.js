@@ -46,30 +46,43 @@ exports.deleteProfile = async (req, res) => {
 
 // POST for editing name
 exports.saveEdit = async (req, res) => {
-  try{
+  try {
     const data = req.body;
     const userId = data.userId;
 
-    if(!userId){
+    if (!userId) {
       return res.status(400).send('No user Id found');
     }
 
+    //update fields
+    const updateFields = {
+      first_name: data.first_name,
+      last_name: data.last_name,
+      description: data.description
+    };
+
+    // if custom profile pic exists
+    if (data.profile_pic_base64 && data.profile_pic_base64.trim() !== '') {
+      updateFields.profileImage = {
+        data: Buffer.from(data.profile_pic_base64, 'base64'),
+        contentType: 'image/jpeg' 
+      };
+    }
+
+    // update
     const updateUser = await User.findByIdAndUpdate(
       userId,
-      {
-        first_name: data.first_name,
-        last_name: data.last_name,
-        description: data.description
-      },
-      {new: true}
+      updateFields,
+      { new: true }
     );
 
-    if(!updateUser){
+    if (!updateUser) {
       return res.status(404).send('User cannot be found');
     }
 
     return res.redirect(`/prof_edit?userId=${userId}`);
-  } catch(err){
+  } catch (err) {
     console.log(err);
+    res.status(500).send('Error saving profile');
   }
 };

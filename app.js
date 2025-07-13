@@ -26,7 +26,8 @@ app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
 // Middleware
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit:'10mb'}));
+app.use(express.json({ limit: '10mb' })); // for img
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth_ref', express.static(path.join(__dirname, 'public', 'auth_ref')));
 
@@ -64,6 +65,22 @@ const resInfoRoute = require('./routers/res_infoRouter.js');
 const profInfoRoute = require('./routers/prof_infoRouter.js'); // added
 const profEditRoute = require('./routers/prof_editRouter.js');
 const index = require('./routers/indexRouter.js');
+
+app.get('/user/:id/image', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user || !user.profileImage || !user.profileImage.data) {
+      return res.status(404).send('No profile image found');
+    }
+
+    res.contentType(user.profileImage.contentType);
+    res.send(user.profileImage.data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error loading profile image');
+  }
+});
 
 
 // Mount routers
