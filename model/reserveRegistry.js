@@ -30,21 +30,21 @@ const reserveSchema = new mongoose.Schema({
     },
 
     reservedBy: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
 
     belongsTo: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    
+
     requestDate: {
         type: Date,
         default: Date.now
     }
 });
 
-module.exports = mongoose.model('Reservations', reserveSchema);
+module.exports = mongoose.model('Reservation', reserveSchema);
