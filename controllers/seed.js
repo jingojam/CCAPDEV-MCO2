@@ -121,14 +121,13 @@ async function insertSampleReservations() {
 
             reservations.push({
                 lab_name: lab.lab_name,
-                lab_description: lab.lab_description,
+                //lab_description: lab.lab_description,
                 lab_sched: day,
                 lab_url: lab.lab_url,
 
-                date: day.toISOString().split('T')[0], // YYYY-MM-DD format
+                //date: day.toISOString().split('T')[0], // YYYY-MM-DD format just in case we wanna use string
                 startTime: String(start).padStart(4, '0'),
                 endTime: String(end).padStart(4, '0'),
-                laboratory: lab.lab_name,
                 seat: String(idx + 1),
                 reservedBy: user._id,
                 belongsTo: user._id
