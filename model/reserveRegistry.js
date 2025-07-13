@@ -10,6 +10,10 @@ const reserveSchema = new mongoose.Schema({
         type: Date //just the mm/dd/yy
     },
 
+    seat_num: {
+        type: Number
+    },
+
     lab_url: {
         type: String
     },

@@ -29,24 +29,28 @@
         <!-- Reservations Section -->
         <div class="reservations-info">
             <h2>Current Reservations</h2>
-            <table class="reservation-table">
-                <thead>
-                    <tr>
-                        <th>Laboratory</th>
-                        <th>Seat</th>
-                        <th>Date & Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each reservations}}
+            {{#if reservations.length}}
+                <table class="reservation-table">
+                    <thead>
                         <tr>
-                            <td>{{lab}}</td>
-                            <td>{{seat}}</td>
-                            <td>{{datetime}}</td>
+                            <th>Laboratory</th>
+                            <th>Seat</th>
+                            <th>Date & Time</th>
                         </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {{#each reservations}}
+                            <tr>
+                                <td>{{lab_name}}</td>
+                                <td>{{seat}}</td>
+                                <td>{{lab_sched}} {{startTime}} {{endTime}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            {{else}}
+                <p>No Reservations Found.</p>
+            {{/if}}
         </div>
 
     </div>

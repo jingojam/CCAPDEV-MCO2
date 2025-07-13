@@ -1,5 +1,5 @@
 const User = require('../model/userRegistry'); // adjust path as needed
-const Reservation = require('../model/labRegistry'); // adjust path
+const Reservation = require('../model/reserveRegistry'); // adjust path
 
 exports.renderInfoPage = async (req, res) => {
   try {
@@ -10,7 +10,7 @@ exports.renderInfoPage = async (req, res) => {
     }
 
     const user = await User.findById(userId).lean(); // or whatever your DB uses
-    const reservations = await Reservation.find({ user: userId });
+    const reservations = await Reservation.find({ reservedBy: userId }).populate('reservedBy', 'first_name last_name').lean();
 
     res.render('prof_info', {
       title: 'View Profile Info',
