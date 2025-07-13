@@ -18,13 +18,13 @@
                             <h3>Choose a date:</h3>
                             <select name="Days" id="Days">
                                 {{#each days}}
-                                    <option value="{{this}}">{{this}}</option>
+                                    <option value="{{this.value}}">{{this.label}}</option>
                                 {{/each}}
                             </select>
                             <h3>Choose start time:</h3>
                             <select name="Hours" id="Hours">
                                 {{#each startTimes}}
-                            <option value="{{this}}">{{this}}</option>
+                            <option value="{{this.value}}">{{this.label}}</option>
                                 {{/each}}
                             </select>
                             <h3>Select end hours</h3>
