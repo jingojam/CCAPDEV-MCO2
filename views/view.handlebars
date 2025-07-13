@@ -16,7 +16,7 @@
 
       {{#each currentReservations}}
         <div class="reservation-row current" role="button" tabindex="0" 
-        onclick="location.href='/res_edit?userId={{user._id}}'">
+        onclick="location.href='{{this.link}}'">
          
           <span class="date">{{date}}</span>                <!-- Modify onclick -->
           <span class="divider"></span>
@@ -33,7 +33,7 @@
 
       {{#each completedReservations}}
         <div class="reservation-row completed" role="button" tabindex="0"
-          onclick="location.href='/res_info?userId={{user._id}}'">
+          onclick="location.href='{{this.link}}'">
 
           <span class="date">{{date}}</span>                <!-- Modify onclick -->
           <span class="divider"></span>
