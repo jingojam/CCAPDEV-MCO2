@@ -14,12 +14,13 @@
         </div>
     </div>
 
-    <form class="search-form">
-        <input id="search-bar" type="text" placeholder="">
-        <button id="search-button" type="submit">
-            <img src="/resources/search_icon.png" class="search-icon" />
-        </button>
-    </form>
+<form method="POST" class="search-form" action="/search-user">
+  <input id="search-bar" name="full_name" type="text" placeholder="Enter full name">
+  <button id="search-button" type="submit">
+    <img src="/resources/search_icon.png" class="search-icon" />
+  </button>
+</form>
+
 </div>
 
 <script>
