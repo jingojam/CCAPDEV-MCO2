@@ -10,11 +10,12 @@
   <div class="profile-section">
     <div class="profile-info">
       <img src="{{user.profile_pic_url}}" alt="Header Profile Picture" class="profile-pic">
-      
-      <button id="edit-pfp-button" class="button">Edit</button>
 
-      <form action="/prof_edit/save-edit" method="POST">
+      <form action="/prof_edit/save-edit" method="POST" enctype="multipart/form-data">
         <input type="hidden" id="userId" value="{{user._id}}">
+
+        <input type="file" id="pfp-input" name="pfp" style="display:none;" accept="image/*">
+        <button id="edit-pfp-button" class="button">Edit</button>   
 
         <h2>First Name</h2>
         <input type="text" name="first_name" value="{{user.first_name}}" required>
@@ -23,7 +24,7 @@
         <input type="text" name="last_name" value="{{user.last_name}}" required>
 
         <h2>Description</h2>
-        <textarea name="description" rows="4" cols="50">{{user.description}}</textarea>
+        <textarea name="description" rows="5" cols="50">{{user.description}}</textarea>
 
         <input type="hidden" name="userId" value="{{user._id}}">
 
@@ -35,3 +36,11 @@
     </div>
   </div>
 </div>
+
+<script>
+  $(document).ready(function(){
+    $("#edit-pfp-button").on("click", function(){
+      $('#pfp-input').click();
+    });
+  });
+</script>
