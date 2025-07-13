@@ -79,47 +79,6 @@ app.use('/prof_info', profInfoRoute); //added
 app.use('/prof_edit', profEditRoute);
 app.use('/index', index);
 
-// POST: Register
-// app.post('/register', async (req, res) => {
-//   try {
-//     const { fname, lname, role, DLSUemail, password } = req.body;
-
-//     const existing = await User.findOne({ email: DLSUemail });
-//     if (existing) return res.status(400).send('Email already registered.');
-
-//     const newUser = new User({
-//       first_name: fname,
-//       last_name: lname,
-//       email: DLSUemail,
-//       role,
-//       password
-//     });
-
-//     await newUser.save();
-//       res.redirect('/auth_ref/Login.html');
-//   } catch (err) {
-//     console.error('Registration error:', err);
-//     res.status(500).send('Registration failed.');
-//   }
-// });
-
-// // POST: Login
-// app.post('/Login', async (req, res) => {
-//   try {
-//     const { DLSUemail, password } = req.body;
-//     const user = await User.findOne({ email: DLSUemail });
-
-//     if (!user) return res.status(401).send('No account found.');
-//     if (user.password !== password) return res.status(401).send('Incorrect password.');
-
-//     console.log(`Redirecting to /prof_info?userId=${user._id}`);
-//     res.redirect(`/home`);
-//   } catch (err) {
-//     console.error('Login error:', err);
-//     res.status(500).send('Login failed.');
-//   }
-// });
-
 // Start server
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);

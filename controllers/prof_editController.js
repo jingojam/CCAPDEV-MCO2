@@ -21,3 +21,55 @@ exports.renderEditPage = async (req, res) => {
     res.status(500).send('Error loading profile info');
   }
 };
+
+// POST for deleting user
+exports.deleteProfile = async (req, res) => {
+  try{
+    const userId = req.body.userId;
+
+    if(!userId){
+      return res.status(400).send('Missing userId in query');
+    }
+
+    const deleteUser = await User.findByIdAndDelete(userId);
+
+    if(!deleteUser){
+      return res.status(404).send('User cannot be found');
+    }
+
+    return res.redirect('/login');
+  } catch(err){
+    console.log(err);
+    res.status(500).send('Error deleting profile');
+  }
+};
+
+// POST for editing name
+exports.saveEdit = async (req, res) => {
+  try{
+    const data = req.body;
+    const userId = data.userId;
+
+    if(!userId){
+      return res.status(400).send('No user Id found');
+    }
+
+    const updateUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        description: data.description
+      },
+      {new: true}
+    );
+
+    if(!updateUser){
+      return res.status(404).send('User cannot be found');
+    }
+
+    return res.redirect(`/prof_edit?userId=${userId}`);
+  } catch(err){
+    console.log(err);
+  }
+};

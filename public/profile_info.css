@@ -109,6 +109,12 @@ a {
     border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
+button:hover {
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+
 .manage-profile #edit-button {
     background-color: rgb(47, 88, 253);
     color: white;

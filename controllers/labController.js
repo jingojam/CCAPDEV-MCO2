@@ -6,7 +6,7 @@ exports.renderLabPage = async (req, res) => {
     const id = req.params.id;
     const userId = req.query.userId;
 
-    const lab = await Lab.findOne({ lab_id: id });
+    const lab = await Lab.findOne({ lab_id: id }).lean();
     if (!lab) {
       res.status(404).send(`Lab with ID ${id} not found.`);
       return;
@@ -38,8 +38,7 @@ exports.renderLabPage = async (req, res) => {
     }));
 
     res.render('laboratory', {
-      labId: id,
-      labname: lab.lab_name,
+      lab,
       days,
       startTimes,
       endTimes,
@@ -52,4 +51,9 @@ exports.renderLabPage = async (req, res) => {
     console.error('Error rendering lab page:', error);
     res.status(500).send('Internal Server Error');
   }
+};
+
+// POST method for making a reservation
+exports.reserveLab = async (req, res) => {
+
 };

@@ -10,7 +10,7 @@
             
             <div class="create_content">
 
-                <h1>{{labname}}</h1>
+                <h1>{{lab.lab_name}}</h1>
 
                 <div class="reserve-info">
                     <div class="date-prompt">
@@ -24,7 +24,7 @@
                             <h3>Choose start time:</h3>
                             <select name="Hours" id="Hours">
                                 {{#each startTimes}}
-                                    <option value="{{this}}">{{this}}</option>
+                            <option value="{{this}}">{{this}}</option>
                                 {{/each}}
                             </select>
                             <h3>Select end hours</h3>
