@@ -9,12 +9,15 @@
 
   <div class="profile-section">
     <div class="profile-info">
-      <img src="{{user.profile_pic_url}}" alt="Header Profile Picture" class="profile-pic">
-      
-      <button id="edit-pfp-button" class="button">Edit</button>
+      <img src="/user/{{user._id}}/image" alt="Profile Picture" class="profile-pic" onerror="this.onerror=null; this.src='/resources/profile_stock.png';">
 
       <form action="/prof_edit/save-edit" method="POST">
-        <input type="hidden" id="userId" value="{{user._id}}">
+        <input type="hidden" name="userId" value="{{user._id}}">
+
+        <!-- Profile Picture Upload -->
+        <h2>Update Profile Picture</h2>
+        <input type="file" id="pfpInput" accept="image/*">
+        <input type="hidden" name="profile_pic_base64" id="base64Input">
 
         <h2>First Name</h2>
         <input type="text" name="first_name" value="{{user.first_name}}" required>
@@ -25,8 +28,6 @@
         <h2>Description</h2>
         <textarea name="description" rows="4" cols="50">{{user.description}}</textarea>
 
-        <input type="hidden" name="userId" value="{{user._id}}">
-
         <div class="button-container">
           <button id="edit-button" class="button save-button">Save Changes</button>
           <button id="delete-button" class="button delete-button" formaction="/prof_edit/delete-profile" formmethod="POST">Delete Profile</button>
@@ -35,3 +36,20 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.getElementById('pfpInput').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = function () {
+      const base64Data = reader.result.split(',')[1];
+      document.getElementById('base64Input').value = base64Data;
+
+      // Live preview
+      document.getElementById('pfpPreview').src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+</script>
