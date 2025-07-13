@@ -14,7 +14,7 @@
         <div class="profile-section">
             <div class="profile-info">
                 <img src="{{user.profile_pic_url}}" alt="Header Profile Picture" class="profile-pic">
-                <h1>{{user.name}}</h1>
+                <h1>{{user.first_name}} {{user.last_name}}</h1>
                 <div class="description-box">
                     <p>{{user.bio}}</p>
                 </div>
@@ -22,13 +22,13 @@
 
             <div class="manage-profile">
                 <button id="edit-button" class="button" 
-                    onclick="location.href='/prof_edit'">Edit Profile</button>
+                    onclick="location.href='/prof_edit?userId={{user._id}}'">Edit Profile</button>
             </div>
         </div>
 
         <!-- Reservations Section -->
         <div class="reservations-info">
-            <h1>Current Reservations</h1>
+            <h2>Current Reservations</h2>
             <table class="reservation-table">
                 <thead>
                     <tr>

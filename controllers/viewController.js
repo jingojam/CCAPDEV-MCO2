@@ -1,54 +1,61 @@
-exports.renderViewPage = (req, res) => {
-  res.render('view', {
-    title: 'View Reservations',
-    userRole: 'STUDENT',
-    isView: true
-  });
-};
-
-// Route list of reservations
-
+const User = require('../model/userRegistry');
+const Lab = require('../model/labRegistry');
 
 // Sample data for visualization
 
-exports.renderViewPage = (req, res) => {
-  res.render('view', {
-    title: 'View Reservations',
-    userRole: 'STUDENT',
-    isView: true,
+exports.renderViewPage = async (req, res) => {
+  try{
+    const userId = req.query.userId;
 
-    currentReservations: [
-      {
-        date: "xx / xx / xxxx",
-        time: "XX:00 - XX:00",
-        laboratory: "Laboratory XX",
-        seat: "Seat XX",
-        requestDate: "XX / XX / XXXX XX:00"
-      },
-      {
-        date: "xx / xx / xxxx",
-        time: "XX:00 - XX:00",
-        laboratory: "Laboratory XX",
-        seat: "Seat XX",
-        requestDate: "XX / XX / XXXX XX:00"
-      }
-    ],
+    if(!userId){
+      return res.status(400).send('userId parameter missing');
+    }
 
-    completedReservations: [
-      {
-        date: "xx / xx / xxxx",
-        time: "XX:00 - XX:00",
-        laboratory: "Laboratory XX",
-        seat: "Seat XX",
-        requestDate: "XX / XX / XXXX XX:00"
-      },
-      {
-        date: "xx / xx / xxxx",
-        time: "XX:00 - XX:00",
-        laboratory: "Laboratory XX",
-        seat: "Seat XX",
-        requestDate: "XX / XX / XXXX XX:00"
-      }
-    ]
-  });
+    const user = await User.findById(userId).lean();
+
+    res.render('view', {
+      title: 'View Reservations',
+      userRole: 'STUDENT',
+      isView: true,
+      user,
+
+      currentReservations: [
+        {
+          date: "xx / xx / xxxx",
+          time: "XX:00 - XX:00",
+          laboratory: "Laboratory XX",
+          seat: "Seat XX",
+          requestDate: "XX / XX / XXXX XX:00"
+        },
+        {
+          date: "xx / xx / xxxx",
+          time: "XX:00 - XX:00",
+          laboratory: "Laboratory XX",
+          seat: "Seat XX",
+          requestDate: "XX / XX / XXXX XX:00"
+        }
+      ],
+
+      completedReservations: [
+        {
+          date: "xx / xx / xxxx",
+          time: "XX:00 - XX:00",
+          laboratory: "Laboratory XX",
+          seat: "Seat XX",
+          requestDate: "XX / XX / XXXX XX:00"
+        },
+        {
+          date: "xx / xx / xxxx",
+          time: "XX:00 - XX:00",
+          laboratory: "Laboratory XX",
+          seat: "Seat XX",
+          requestDate: "XX / XX / XXXX XX:00"
+        }
+      ]
+    });
+
+  } catch(err){
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
 };

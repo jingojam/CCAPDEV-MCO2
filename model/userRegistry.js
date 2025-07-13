@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema ({
     
     descrption: {
         type: String,
-        default: ''
+        default: 'Describe yourself!'
     },
 
     profile_pic_url: {

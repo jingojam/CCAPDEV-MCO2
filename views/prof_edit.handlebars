@@ -10,10 +10,10 @@
 
   <div class="profile-section">
     <div class="profile-info">
-      <img src="{{profileImage}}" alt="Header Profile Picture" class="profile-pic">
+      <img src="{{user.profile_pic_url}}" alt="Header Profile Picture" class="profile-pic">
       <button id="edit-pfp-button" class="button">Edit</button>
 
-      <h1>{{fullName}}</h1>
+      <h1>{{user.first_name}} {{user.last_name}}</h1>
 
       <div class="description-box">
         <p>{{description}}</p>
