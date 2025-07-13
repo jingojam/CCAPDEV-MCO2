@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema ({
 
     role: {
         type: String,
-        enum: ['Technician', 'Student'],
+        enum: ['TECHNICIAN', 'STUDENT'],
         required: true
     },
 
@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema ({
         type: String,
         required: true,
         unique: true,
-        // this regex is assuming gmail.com is valid too (just remove if ever)
-        match: /^[a-zA-Z0-9._%+-]+@(dlsu\.edu\.ph|gmail\.com)$/
+
+        match: /^[a-zA-Z0-9._%+-]+@(dlsu\.edu\.ph)$/
     },
     password: {
         type: String,

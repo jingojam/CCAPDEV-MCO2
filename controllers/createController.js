@@ -48,7 +48,7 @@ exports.renderCreatePage = async (req, res) => {
 
     res.render('create', {
       title: 'Create Reservation',
-      userRole: 'STUDENT',
+      userRole: user.role,
       isCreate: true,
       user,
       days,

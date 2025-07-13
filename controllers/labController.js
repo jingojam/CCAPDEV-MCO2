@@ -38,6 +38,7 @@ exports.renderLabPage = async (req, res) => {
     }));
 
     res.render('laboratory', {
+      userRole: user.role,
       labId: id,
       labname: lab.lab_name,
       days,

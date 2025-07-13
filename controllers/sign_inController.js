@@ -1,13 +1,13 @@
 const path = require('path');
 const User = require('../model/userRegistry');
 
-// `renderLoginPage` for GET requests
-exports.renderLoginPage = (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'views', 'auth_ref', 'Login.html'));
+// `renderSigninPage` for GET requests
+exports.renderSigninPage = (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'auth_ref', 'sign_in.html'));
 };
 
-// `loginUser` for POST requests
-exports.loginUser = async (req, res) => {
+// `signinUser` for POST requests
+exports.signinUser = async (req, res) => {
   try {
     const { DLSUemail, password } = req.body;
     const user = await User.findOne({ email: DLSUemail });
@@ -18,7 +18,7 @@ exports.loginUser = async (req, res) => {
     console.log(`Redirecting to /prof_info?userId=${user._id}`);
     res.redirect(`/home?userId=${user._id}`);
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).send('Login failed.');
+    console.error('Sign-in error:', err);
+    res.status(500).send('Sign-in  failed.');
   }
 };
