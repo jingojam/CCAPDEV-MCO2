@@ -188,8 +188,9 @@ a {
   text-overflow: ellipsis;
 }
 
-.detail-value {
-  flex: 1;
+.detail-value input{
+
+  text-align: center;
 }
 
 
