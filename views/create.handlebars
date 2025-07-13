@@ -6,8 +6,17 @@
         </div></a>
     </div>
     <div class="create_content">
-        <div class="date-section">
-            <form>
+
+        <div class="filter-section">
+
+            {{#if isTechnician}}
+                <form id="user-form">
+                    <h3>Reserve for:</h3>
+                    <input type="text" name="username" placeholder="Enter student name" />
+                </form>
+            {{/if}}
+
+            <form id="date-form">
                 <div>
                     <h3>Choose a date:</h3>
                     <select name="Days" id="Days">
