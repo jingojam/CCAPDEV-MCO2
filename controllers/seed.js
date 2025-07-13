@@ -3,8 +3,9 @@
     this seed.js file's only purpose is for generating base stuff for the lab
 */
 const mongoose = require('mongoose');
-const User = require('../model/userRegistry'); // Adjusted path
-const Lab = require('../model/labRegistry');   // Adjusted path
+const User        = require('../model/userRegistry');   // Adjust path if needed
+const Lab         = require('../model/labRegistry');    // Adjust path if needed
+const Reservation = require('../model/reserveRegistry'); // Your reservation model
 
 async function setDates() {
     const dates = [];
@@ -91,10 +92,74 @@ async function insertSampleUsers() {
     console.log(`${insertedCount} new user(s) inserted.`);
 }
 
+// List of sample emails to restrict reservations to
+const SAMPLE_EMAILS = [
+    'john.doe@dlsu.edu.ph',
+    'jane.smith@dlsu.edu.ph',
+    'admin.user@dlsu.edu.ph'
+];
+
+async function insertSampleReservations() {
+    // Find only our sample users
+    const users = await User.find({ email: { $in: SAMPLE_EMAILS } });
+    const labs  = await Lab.find().sort({ lab_id: 1 }).limit(5); // Get 5 labs
+
+    if (!users.length || !labs.length) {
+        console.log('🟨 Need users and labs before adding reservations.');
+        return;
+    }
+
+    const reservations = [];
+
+    users.forEach(user => {
+        labs.forEach((lab, idx) => {
+            const day = new Date();
+            day.setDate(day.getDate() + idx); // Today + index days
+
+            const start = 900 + idx * 100;     // 0900, 1000, ...
+            const end   = start + 100;         // one-hour slot
+
+            reservations.push({
+                lab_name: lab.lab_name,
+                lab_description: lab.lab_description,
+                lab_sched: day,
+                lab_url: lab.lab_url,
+
+                date: day.toISOString().split('T')[0], // YYYY-MM-DD format
+                startTime: String(start).padStart(4, '0'),
+                endTime: String(end).padStart(4, '0'),
+                laboratory: lab.lab_name,
+                seat: String(idx + 1),
+                reservedBy: user._id,
+                belongsTo: user._id
+            });
+        });
+    });
+
+    let inserted = 0;
+    for (const r of reservations) {
+        const exists = await Reservation.findOne({
+            lab_name: r.lab_name,
+            date: r.date,
+            startTime: r.startTime,
+            endTime: r.endTime,
+            belongsTo: r.belongsTo
+        });
+
+        if (!exists) {
+            await Reservation.create(r);
+            inserted++;
+        }
+    }
+
+    console.log(`✅ Inserted ${inserted} new reservation(s).`);
+}
+
 async function runSeeder() {
     try {
         await generateLabs();
         await insertSampleUsers();
+        await insertSampleReservations(); // NEW: Add reservations
     } catch (err) {
         console.error('Seeder failed:', err);
     }
