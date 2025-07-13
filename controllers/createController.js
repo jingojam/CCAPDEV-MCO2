@@ -7,6 +7,8 @@ exports.renderCreatePage = async (req, res) => {
     const userId = req.query.userId;
     const user = await User.findById(userId).lean();
 
+    const isTechnician = user.role === 'TECHNICIAN';
+
     const laboratories = labs.map((lab) => {
       let occupied = 0;
 
@@ -71,6 +73,7 @@ exports.renderCreatePage = async (req, res) => {
     res.render('create', {
       title: 'Create Reservation',
       userRole: user.role,
+      isTechnician,
       isCreate: true,
       user,
       days,

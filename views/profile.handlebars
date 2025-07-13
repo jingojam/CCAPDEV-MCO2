@@ -25,7 +25,7 @@
             <!-- Profile Section -->
             <div class="profile-section">
                 <div class="profile-info">
-                    <img src="{{profile_image}}" alt="Header Profile Picture" class="profile-pic">
+                    <img src="/user/{{user._id}}/image" alt="Profile Picture" class="profile-pic" onerror="this.onerror=null; this.src='/resources/profile_stock.png';">
                     <h1>{{user.name}}</h1>
                     <div class="description-box">
                         <p>{{user.description}}</p>

@@ -59,29 +59,33 @@ body {
     gap: 20px;
 }
 
-
-
-.date-section {
+.filter-section {
 
     margin-top: 20px;
-
     display: flex;
-
+    flex-direction: column;
     justify-content: center;
 
 }
 
-
-.create_content .date_section form{
+.create_content .filter-section {
 
     display: flex;
-
     flex-direction: column;
-
     justify-content: center;
-    
     align-items: center;
 }
+
+.filter-section input {
+
+    padding: 20px 25px;
+    font-size: 16px;
+    width: 230px;
+    height: 20px;
+    border-radius: 5px;
+    border: 1.5px solid #ccc;
+}
+
 
 select {
     padding: 10px 15px 10px 15px;
