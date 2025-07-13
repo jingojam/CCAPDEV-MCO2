@@ -8,17 +8,17 @@ const port = 3000;
 
 // Handlebars setup
 const exphbs = hbars.create({
-  helpers: {
-    ifEquals: function (a, b, options) {
-      return a === b ? options.fn(this) : options.inverse(this);
+    helpers: {
+        ifEquals: function (a, b, options) {
+            return a === b ? options.fn(this) : options.inverse(this);
+        },
+        encodeURIComponent: function (value) {
+            return encodeURIComponent(value);
+        }
     },
-    encodeURIComponent: function (value) {
-      return encodeURIComponent(value);
-    }
-  },
-  layoutsDir: path.join(__dirname, 'views', 'layouts'),
-  partialsDir: path.join(__dirname, 'views', 'partials'),
-  defaultLayout: 'main'
+    layoutsDir: path.join(__dirname, 'views', 'layouts'),
+    partialsDir: path.join(__dirname, 'views', 'partials'),
+    defaultLayout: 'main'
 });
 
 app.engine('handlebars', exphbs.engine);
@@ -26,60 +26,59 @@ app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
 // Middleware
-app.use(express.urlencoded({ extended: true, limit:'10mb'}));
-app.use(express.json({ limit: '10mb' })); // for img
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth_ref', express.static(path.join(__dirname, 'public', 'auth_ref')));
 
 // MongoDB setup
 const mongoURI = 'mongodb://localhost:27017/mco2DB';
-const generateLabs = require('./controllers/seed');
+const runSeeder = require('./controllers/seed.js'); // Import seeder
 
 mongoose.connect(mongoURI)
-  .then(async () => {
-    console.log('✅ Connected to MongoDB');
-    await generateLabs();
-    
-
-  })
-  .catch(err => {
-    console.error('❌ MongoDB connection error:', err);
-  });
+    .then(() => {
+        console.log('✅ Connected to MongoDB');
+        runSeeder(); // Run the seeder after successful connection
+    })
+    .catch(err => {
+        console.error('❌ MongoDB connection error:', err);
+    });
 
 const User = require('./model/userRegistry');
 
 // Welcome Page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'auth_ref', 'Welcome.html'));
+    res.sendFile(path.join(__dirname, 'public', 'auth_ref', 'Welcome.html'));
 });
 
 // Routers
 const homeRoute = require('./routers/homeRouter.js');
 const signinRoute = require('./routers/sign_inRouter.js');
-const signupRoute = require('./routers/sign_upRouter.js')
+const signupRoute = require('./routers/sign_upRouter.js');
 const createRoute = require('./routers/createRouter.js');
 const labRoute = require('./routers/labRouter.js');
 const viewRoute = require('./routers/viewRouter.js');
 const resEditRoute = require('./routers/res_editRouter.js');
 const resInfoRoute = require('./routers/res_infoRouter.js');
-const profInfoRoute = require('./routers/prof_infoRouter.js'); // added
+const profInfoRoute = require('./routers/prof_infoRouter.js');
 const profEditRoute = require('./routers/prof_editRouter.js');
 const index = require('./routers/indexRouter.js');
 
+// Route for serving user profile image
 app.get('/user/:id/image', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
+    try {
+        const user = await User.findById(req.params.id);
 
-    if (!user || !user.profileImage || !user.profileImage.data) {
-      return res.status(404).send('No profile image found');
+        if (!user || !user.profileImage || !user.profileImage.data) {
+            return res.status(404).send('No profile image found');
+        }
+
+        res.contentType(user.profileImage.contentType);
+        res.send(user.profileImage.data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error loading profile image');
     }
-
-    res.contentType(user.profileImage.contentType);
-    res.send(user.profileImage.data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error loading profile image');
-  }
 });
 
 app.post('/search-user', async (req, res) => {
@@ -135,11 +134,11 @@ app.use('/laboratory', labRoute);
 app.use('/view', viewRoute);
 app.use('/res_edit', resEditRoute);
 app.use('/res_info', resInfoRoute);
-app.use('/prof_info', profInfoRoute); //added
+app.use('/prof_info', profInfoRoute);
 app.use('/prof_edit', profEditRoute);
 app.use('/index', index);
 
 // Start server
 app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
+    console.log(`App listening at http://localhost:${port}`);
 });

@@ -15,8 +15,8 @@ exports.renderEditPage = async (req, res) => {
     }
 
     res.render('res_edit', {
-      title: 'Edit Reservation',
-      userRole: 'STUDENT',
+      title: 'Edit - Reservation',
+      userRole: user.role,
       isResEdit: true,
       user
     });

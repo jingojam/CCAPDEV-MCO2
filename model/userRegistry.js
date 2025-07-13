@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
 
   lab_reservations: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Lab'
+    ref: 'Reservation'
   }]
 });
 
