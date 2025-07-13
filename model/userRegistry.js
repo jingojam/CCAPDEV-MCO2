@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema ({
         required: true,
     },
     
-    descrption: {
+    description: {
         type: String,
         default: 'Describe yourself!'
     },
