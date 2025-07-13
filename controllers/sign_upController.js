@@ -1,13 +1,13 @@
 const path = require('path');
 const User = require('../model/userRegistry');
 
-// `renderUserPage` is for rendering the page layout
-exports.renderRegisterPage = (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'views', 'auth_ref', 'Register.html'));
+// `renderSignupPage` is for rendering the page layout
+exports.renderSignupPage = (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'auth_ref', 'sign_up.html'));
 };
 
-// `registerUser` is for actual post logic for registrrations
-exports.registerUser = async (req, res) => {
+// `signupUser` is for actual post logic for registrrations
+exports.signupUser = async (req, res) => {
   try {
     const { fname, lname, role, DLSUemail, password } = req.body;
 
@@ -23,9 +23,9 @@ exports.registerUser = async (req, res) => {
     });
 
     await newUser.save();
-    res.redirect('/login');
+    res.redirect('/sign_in');
   } catch (err) {
-    console.error('Registration error:', err);
-    res.status(500).send('Registration failed.');
+    console.error('Sign-up error:', err);
+    res.status(500).send('Sign-up failed.');
   }
 };

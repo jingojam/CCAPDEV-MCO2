@@ -23,12 +23,39 @@ exports.renderLabPage = async (req, res) => {
 
     const days = lab.lab_sched?.map(d => new Date(d).toDateString()) || [];
 
+    // The labels can be changed based on if we want AM/PM or Military Time
     const startTimes = [
-      "09:00", "10:00", "11:00", "12:00", "13:00", "14:00"
+      { value: "0900", label: "09:00" },
+      { value: "0930", label: "09:30" },
+      { value: "1000", label: "10:00" },
+      { value: "1030", label: "10:30" },
+      { value: "1100", label: "11:00" },
+      { value: "1130", label: "11:30" },
+      { value: "1200", label: "12:00" },
+      { value: "1230", label: "12:30" },
+      { value: "1300", label: "13:00" },
+      { value: "1330", label: "13:30" },
+      { value: "1400", label: "14:00" },
+      { value: "1430", label: "14:30" },
+      { value: "1500", label: "15:00" },
+      { value: "1530", label: "15:30" }
     ];
 
     const endTimes = [
-      "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"
+      { value: "0930", label: "09:30" },
+      { value: "1000", label: "10:00" },
+      { value: "1030", label: "10:30" },
+      { value: "1100", label: "11:00" },
+      { value: "1130", label: "11:30" },
+      { value: "1200", label: "12:00" },
+      { value: "1230", label: "12:30" },
+      { value: "1300", label: "13:00" },
+      { value: "1330", label: "13:30" },
+      { value: "1400", label: "14:00" },
+      { value: "1430", label: "14:30" },
+      { value: "1500", label: "15:00" },
+      { value: "1530", label: "15:30" },
+      { value: "1600", label: "16:00" }
     ];
 
     const seats = lab.seats.map(seat => ({
@@ -38,7 +65,9 @@ exports.renderLabPage = async (req, res) => {
     }));
 
     res.render('laboratory', {
-      lab,
+      userRole: user.role,
+      labId: id,
+      labname: lab.lab_name,
       days,
       startTimes,
       endTimes,

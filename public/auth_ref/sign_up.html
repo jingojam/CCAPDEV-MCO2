@@ -21,7 +21,7 @@
       <br>
       <h1>Sign Up</h1>
 
-      <form method="POST" action="/register">
+      <form method="POST" action="/sign_up">
         <div class="name-line">
           <div class="name-group">
             <p><strong>First Name</strong></p>
@@ -36,10 +36,10 @@
         <br>
 
         <p><strong>Role:</strong></p>
-        <input type="radio" id="Technician" name="role" value="Technician" required>
+        <input type="radio" id="Technician" name="role" value="TECHNICIAN" required>
         <label for="Technician">Technician</label>
 
-        <input type="radio" id="Student" name="role" value="Student" required>
+        <input type="radio" id="Student" name="role" value="STUDENT" required>
         <label for="Student">Student</label>
 
         <br><br>
@@ -55,7 +55,7 @@
         <button type="submit" class="btn btn-outline-success">Submit</button>
       </form>
 
-      <p>Already have an Account?  <button onclick="window.location.href='/login'" class="btn btn-link p-0 align-baseline">Click Here</button> to Log in!</p>
+      <p>Already have an Account?  <button onclick="window.location.href='/sign_in'" class="btn btn-link p-0 align-baseline">Click Here</button> to Log in!</p>
     </div>
   </div>
 </body>

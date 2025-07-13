@@ -12,7 +12,7 @@ exports.renderEditPage = async (req, res) => {
 
     res.render('prof_edit', {
       title: 'Edit Profile Info',
-      userRole: 'STUDENT',
+      userRole: user.role,
       isProfileEdit: true,
       user
     });

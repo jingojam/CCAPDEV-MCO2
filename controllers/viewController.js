@@ -15,7 +15,7 @@ exports.renderViewPage = async (req, res) => {
 
     res.render('view', {
       title: 'View Reservations',
-      userRole: 'STUDENT',
+      userRole: user.role,
       isView: true,
       user,
 

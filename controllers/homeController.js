@@ -6,7 +6,7 @@ exports.renderHomePage = async (req, res) => {
 
   res.render('home', {
     title: 'Home Page',
-    userRole: 'STUDENT',
+    userRole: user.role,
     isHome: true,
     user
   });

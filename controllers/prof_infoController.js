@@ -14,7 +14,7 @@ exports.renderInfoPage = async (req, res) => {
 
     res.render('prof_info', {
       title: 'View Profile Info',
-      userRole: 'STUDENT',
+      userRole: user.role,
       isProfileInfo: true,
       user,
       reservations

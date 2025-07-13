@@ -28,7 +28,7 @@ app.set('views', path.join(__dirname, 'views'));
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/auth_ref', express.static(path.join(__dirname, 'views', 'auth_ref')));
+app.use('/auth_ref', express.static(path.join(__dirname, 'public', 'auth_ref')));
 
 // MongoDB setup
 const mongoURI = 'mongodb://localhost:27017/mco2DB';
@@ -49,13 +49,13 @@ const User = require('./model/userRegistry');
 
 // Welcome Page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'auth_ref', 'Welcome.html'));
+  res.sendFile(path.join(__dirname, 'public', 'auth_ref', 'Welcome.html'));
 });
 
 // Routers
 const homeRoute = require('./routers/homeRouter.js');
-const loginRoute = require('./routers/loginRouter.js');
-const registerRoute = require('./routers/registerRouter.js')
+const signinRoute = require('./routers/sign_inRouter.js');
+const signupRoute = require('./routers/sign_upRouter.js')
 const createRoute = require('./routers/createRouter.js');
 const labRoute = require('./routers/labRouter.js');
 const viewRoute = require('./routers/viewRouter.js');
@@ -67,8 +67,8 @@ const index = require('./routers/indexRouter.js');
 
 
 // Mount routers
-app.use('/login', loginRoute);
-app.use('/register', registerRoute);
+app.use('/sign_in', signinRoute);
+app.use('/sign_up', signupRoute);
 app.use('/home', homeRoute);
 app.use('/create', createRoute);
 app.use('/laboratory', labRoute);

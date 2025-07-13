@@ -30,7 +30,7 @@
                             <h3>Select end hours</h3>
                             <select name="EndHours" id="EndHours">
                                 {{#each endTimes}}
-                                    <option value="{{this}}">{{this}}</option>
+                                    <option value="{{this.value}}">{{this.label}}</option>
                                 {{/each}}
                             </select>
                         </form>
@@ -65,12 +65,12 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    let selectedDate = null;
-    let selectedStartTime = null;
-    let selectedEndTime = null;
+    let selectedDate       = null;
+    let selectedStartTime  = null;
+    let selectedEndTime    = null;
 
-    const daysEl = document.getElementById('Days');
-    const hoursEl = document.getElementById('Hours');
+    const daysEl     = document.getElementById('Days');
+    const hoursEl    = document.getElementById('Hours');
     const endHoursEl = document.getElementById('EndHours');
 
     if (!daysEl || !hoursEl || !endHoursEl) {
@@ -78,6 +78,32 @@
       return;
     }
 
+    /* ---------- NEW FUNCTION: filter end‑time options ---------- */
+    function filterEndTimes() {
+      const start = Number(selectedStartTime);          // 900, 930, …
+      let earliestValid = null;
+
+      Array.from(endHoursEl.options).forEach(opt => {
+        const end = Number(opt.value);
+        const allowed = end > start;                    // strictly after
+
+        opt.disabled = !allowed;                       // grey out
+        opt.hidden   = !allowed;                       // hide in list
+
+        if (allowed && earliestValid === null) earliestValid = opt;
+      });
+
+      // If current end time isn't valid anymore, pick the earliest valid one
+      if (selectedEndTime === null || Number(selectedEndTime) <= start) {
+        if (earliestValid) {
+          earliestValid.selected = true;
+          selectedEndTime = earliestValid.value;
+          console.log("Auto‑selected new end time:", selectedEndTime);
+        }
+      }
+    }
+
+    /* ---------------- EXISTING LISTENERS ---------------- */
     daysEl.addEventListener('change', function () {
       selectedDate = this.value;
       console.log("Selected date:", selectedDate);
@@ -86,11 +112,18 @@
     hoursEl.addEventListener('change', function () {
       selectedStartTime = this.value;
       console.log("Selected start time:", selectedStartTime);
+      filterEndTimes();          // 🔔 update end‑time list
     });
 
     endHoursEl.addEventListener('change', function () {
       selectedEndTime = this.value;
       console.log("Selected end time:", selectedEndTime);
     });
+
+    /* ---------- INITIALISE ON PAGE LOAD ---------- */
+    // Set default start/end if the selects already have a value
+    selectedStartTime = hoursEl.value;
+    selectedEndTime   = endHoursEl.value;
+    filterEndTimes();
   });
 </script>
