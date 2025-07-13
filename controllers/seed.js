@@ -57,7 +57,6 @@ async function insertSampleUsers() {
             email: 'john.doe@dlsu.edu.ph',
             password: 'password123',
             description: 'BS Computer Science student.',
-            profile_pic_url: '/resources/john.jpg'
         },
         {
             first_name: 'Jane',
