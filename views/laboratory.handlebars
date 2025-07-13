@@ -48,13 +48,25 @@
                             <thead>
                                 <tbody>
                                     {{#each seats}}
+                                    {{!-- Check if this seat is reserved --}}
+                                    {{#if (isReserved ../reservations this.seatNumber ../selectedDate ../startTime ../endTime)}}
                                         <tr>
-                                            <td>{{this.seatNumber}}</td>
-                                            <td>{{this.vacancy}}</td>
-                                            <td><button class="reserve-lab">{{this.reserveText}}</button></td>
+                                        <td>{{this.seatNumber}}</td>
+                                        <td>Reserved</td>
+                                        <td><button class="reserve-lab disabled" disabled>Reserved</button></td>
                                         </tr>
+                                    {{else}}
+                                        <tr>
+                                        <td>{{this.seatNumber}}</td>
+                                        <td>{{this.vacancy}}</td>
+                                        <td>
+                                            <button class="reserve-lab" data-seat="{{this.seatNumber}}">
+                                            {{this.reserveText}}
+                                            </button>
+                                        </td>
+                                        </tr>
+                                    {{/if}}
                                     {{/each}}
-                                </tbody>
                             </thead>
                         </table>
                     </div>
@@ -65,12 +77,12 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    let selectedDate       = null;
-    let selectedStartTime  = null;
-    let selectedEndTime    = null;
+    let selectedDate = null;
+    let selectedStartTime = null;
+    let selectedEndTime = null;
 
-    const daysEl     = document.getElementById('Days');
-    const hoursEl    = document.getElementById('Hours');
+    const daysEl = document.getElementById('Days');
+    const hoursEl = document.getElementById('Hours');
     const endHoursEl = document.getElementById('EndHours');
 
     if (!daysEl || !hoursEl || !endHoursEl) {
@@ -80,25 +92,24 @@
 
     /* ---------- NEW FUNCTION: filter end‑time options ---------- */
     function filterEndTimes() {
-      const start = Number(selectedStartTime);          // 900, 930, …
+      const start = Number(selectedStartTime); // e.g., 900, 1000
       let earliestValid = null;
 
       Array.from(endHoursEl.options).forEach(opt => {
         const end = Number(opt.value);
-        const allowed = end > start;                    // strictly after
+        const allowed = end > start;
 
-        opt.disabled = !allowed;                       // grey out
-        opt.hidden   = !allowed;                       // hide in list
+        opt.disabled = !allowed;
+        opt.hidden = !allowed;
 
         if (allowed && earliestValid === null) earliestValid = opt;
       });
 
-      // If current end time isn't valid anymore, pick the earliest valid one
       if (selectedEndTime === null || Number(selectedEndTime) <= start) {
         if (earliestValid) {
           earliestValid.selected = true;
           selectedEndTime = earliestValid.value;
-          console.log("Auto‑selected new end time:", selectedEndTime);
+          console.log("Auto-selected new end time:", selectedEndTime);
         }
       }
     }
@@ -112,7 +123,7 @@
     hoursEl.addEventListener('change', function () {
       selectedStartTime = this.value;
       console.log("Selected start time:", selectedStartTime);
-      filterEndTimes();          // 🔔 update end‑time list
+      filterEndTimes();
     });
 
     endHoursEl.addEventListener('change', function () {
@@ -121,9 +132,71 @@
     });
 
     /* ---------- INITIALISE ON PAGE LOAD ---------- */
-    // Set default start/end if the selects already have a value
     selectedStartTime = hoursEl.value;
-    selectedEndTime   = endHoursEl.value;
+    selectedEndTime = endHoursEl.value;
     filterEndTimes();
+
+    /* ---------- BUTTON CLICK HANDLER ---------- */
+    const reserveButtons = document.querySelectorAll('.reserve-lab');
+
+    reserveButtons.forEach(button => {
+      button.addEventListener('click', async function () {
+        const seatString = this.dataset.seat;
+        const numericOnly = seatString.replace(/[^0-9]/g, ''); // removes everything except digits
+        const seatNumber = parseInt(numericOnly, 10); // always use radix 10
+
+        const selectedDate = document.getElementById('Days').value;
+        const selectedStartTime = document.getElementById('Hours').value;
+        const selectedEndTime = document.getElementById('EndHours').value;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('userId');
+
+        // Make sure all required fields are present
+        if (!selectedDate || !selectedStartTime || !selectedEndTime || !userId || !seatNumber) {
+          alert("Please make sure all fields are selected and you are logged in.");
+          return;
+        }
+
+        const reservationData = {
+          lab_name: "{{ lab.lab_name }}",
+          lab_sched: selectedDate, // This is a string like "2025-04-05"
+          startTime: selectedStartTime, // e.g., "0900"
+          endTime: selectedEndTime,     // e.g., "1000"
+          seat: parseInt(seatNumber),   // Convert to number
+          lab_url: "{{ lab.lab_url }}",
+          reservedBy: userId,
+          belongsTo: userId
+        };
+
+        console.log("Sending reservation:", reservationData);
+        
+        // For Testing
+        console.log("Raw seat number:", seatNumber);
+        console.log("Parsed seat number:", parseInt(seatNumber));
+        try {
+          const response = await fetch('/api/reservations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reservationData)
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            this.textContent = "Reserved By: {{ user.first_name }}";
+            this.disabled = true;
+            this.classList.add('reserved');
+          } else {
+            alert(result.message || "Reservation failed");
+          }
+        } catch (err) {
+          console.error("Error making reservation:", err);
+          alert("An error occurred while reserving.");
+        }
+      });
+    });
   });
 </script>

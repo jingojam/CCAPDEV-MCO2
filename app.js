@@ -8,17 +8,39 @@ const port = 3000;
 
 // Handlebars setup
 const exphbs = hbars.create({
-    helpers: {
-        ifEquals: function (a, b, options) {
-            return a === b ? options.fn(this) : options.inverse(this);
-        },
-        encodeURIComponent: function (value) {
-            return encodeURIComponent(value);
-        }
+  helpers: {
+    ifEquals: function (a, b, options) {
+      return a === b ? options.fn(this) : options.inverse(this);
     },
-    layoutsDir: path.join(__dirname, 'views', 'layouts'),
-    partialsDir: path.join(__dirname, 'views', 'partials'),
-    defaultLayout: 'main'
+    encodeURIComponent: function (value) {
+      return encodeURIComponent(value);
+    },
+    isReserved: function (reservations, seatLabel, selectedDate, startTime, endTime, options) {
+      if (!reservations || !Array.isArray(reservations)) return false;
+
+      const seatNum = parseInt(seatLabel.replace(/\D/g, ''), 10);
+
+      const today = new Date(selectedDate);
+      const dateStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+
+      return reservations.some(res => {
+        // Try both field names: 'seat' and 'seat_num'
+        const resSeat = res.seat || res.seat_num;
+        const sameSeat = parseInt(resSeat) === seatNum;
+
+        // Compare dates
+        const resDateString = new Date(res.lab_sched).toISOString().split('T')[0];
+
+        // Compare times
+        const sameTime = res.startTime === startTime && res.endTime === endTime;
+
+        return sameSeat && resDateString === dateStr && sameTime;
+      });
+    }
+  },
+  layoutsDir: path.join(__dirname, 'views', 'layouts'),
+  partialsDir: path.join(__dirname, 'views', 'partials'),
+  defaultLayout: 'main'
 });
 
 app.engine('handlebars', exphbs.engine);
@@ -80,6 +102,11 @@ app.get('/user/:id/image', async (req, res) => {
         res.status(500).send('Error loading profile image');
     }
 });
+
+const reservationController = require('./controllers/reservationController');
+
+// POST /api/reservations - Create a new reservation
+app.post('/api/reservations', reservationController.createReservation);
 
 // Mount routers
 app.use('/sign_in', signinRoute);

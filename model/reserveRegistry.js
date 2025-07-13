@@ -7,12 +7,10 @@ const reserveSchema = new mongoose.Schema({
     },
 
     lab_sched: {
-        type: Date //just the mm/dd/yy
+        type: Date,
+        required: true
     },
 
-    seat_num: {
-        type: Number
-    },
 
     lab_url: {
         type: String

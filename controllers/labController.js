@@ -1,5 +1,7 @@
 const User = require('../model/userRegistry');
 const Lab = require('../model/labRegistry');
+const Reservation = require('../model/reserveRegistry');
+
 
 exports.renderLabPage = async (req, res) => {
   try {
@@ -64,17 +66,22 @@ exports.renderLabPage = async (req, res) => {
       reserveText: seat.availability ? 'Reserve' : 'Unavailable'
     }));
 
+    // Fetch existing reservations for this lab
+    const reservations = await Reservation.find({ laboratory: lab.lab_name });
+
+    
     res.render('laboratory', {
       userRole: user.role,
       labId: id,
-      labname: lab.lab_name,
+      lab,
       days,
       startTimes,
       endTimes,
       seats,
       isLab: true,
       userId,
-      user
+      user,
+      reservations
     });
   } catch (error) {
     console.error('Error rendering lab page:', error);
