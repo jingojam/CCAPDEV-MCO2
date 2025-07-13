@@ -51,17 +51,42 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    let selectedDate = null;
+    let selectedDate      = null;
     let selectedStartTime = null;
-    let selectedEndTime = null;
+    let selectedEndTime   = null;
 
-    const daysEl = document.getElementById('Days');
-    const hoursEl = document.getElementById('Hours');
+    const daysEl     = document.getElementById('Days');
+    const hoursEl    = document.getElementById('Hours');
     const endHoursEl = document.getElementById('EndHours');
 
     if (!daysEl || !hoursEl || !endHoursEl) {
       console.warn("One or more dropdowns not found");
       return;
+    }
+
+    /* NEW: helper to disable/hide invalid end‑times */
+    function filterEndTimes() {
+      const start = Number(selectedStartTime);     // 900, 930, …
+      let firstValid = null;
+
+      Array.from(endHoursEl.options).forEach(opt => {
+        const end   = Number(opt.value);
+        const allow = end > start;                 // strictly after start
+        opt.disabled = !allow;
+        opt.hidden   = !allow;
+
+        if (allow && firstValid === null) firstValid = opt;
+      });
+
+      // Auto‑select a valid end time if the current one is now invalid
+      if (selectedStartTime && selectedEndTime && Number(selectedEndTime) <= start) {
+            if (firstValid) {
+                firstValid.selected = true;
+                selectedEndTime = firstValid.value;
+                console.log("Auto‑selected end time:", selectedEndTime);
+            }
+        }
+
     }
 
     daysEl.addEventListener('change', function () {
@@ -72,11 +97,17 @@
     hoursEl.addEventListener('change', function () {
       selectedStartTime = this.value;
       console.log("Selected start time:", selectedStartTime);
+      filterEndTimes();                           // update end‑time list
     });
 
     endHoursEl.addEventListener('change', function () {
       selectedEndTime = this.value;
       console.log("Selected end time:", selectedEndTime);
     });
+
+    /* INITIALISE once on page load */
+    selectedStartTime = hoursEl.value;
+    selectedEndTime   = endHoursEl.value;
+    filterEndTimes();
   });
 </script>

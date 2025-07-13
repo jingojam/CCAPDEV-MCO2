@@ -35,15 +35,37 @@ exports.renderCreatePage = async (req, res) => {
     });
 
     const startTimes = [
-      { value: "09:00", label: "9:00 AM" },
-      { value: "10:00", label: "10:00 AM" },
-      { value: "11:00", label: "11:00 AM" },
+      { value: "0900", label: "09:00" },
+      { value: "0930", label: "09:30" },
+      { value: "1000", label: "10:00" },
+      { value: "1030", label: "10:30" },
+      { value: "1100", label: "11:00" },
+      { value: "1130", label: "11:30" },
+      { value: "1200", label: "12:00" },
+      { value: "1230", label: "12:30" },
+      { value: "1300", label: "13:00" },
+      { value: "1330", label: "13:30" },
+      { value: "1400", label: "14:00" },
+      { value: "1430", label: "14:30" },
+      { value: "1500", label: "15:00" },
+      { value: "1530", label: "15:30" }
     ];
 
     const endTimes = [
-      { value: "12:00", label: "12:00 PM" },
-      { value: "13:00", label: "1:00 PM" },
-      { value: "14:00", label: "2:00 PM" },
+      { value: "0930", label: "09:30" },
+      { value: "1000", label: "10:00" },
+      { value: "1030", label: "10:30" },
+      { value: "1100", label: "11:00" },
+      { value: "1130", label: "11:30" },
+      { value: "1200", label: "12:00" },
+      { value: "1230", label: "12:30" },
+      { value: "1300", label: "13:00" },
+      { value: "1330", label: "13:30" },
+      { value: "1400", label: "14:00" },
+      { value: "1430", label: "14:30" },
+      { value: "1500", label: "15:00" },
+      { value: "1530", label: "15:30" },
+      { value: "1600", label: "16:00" }
     ];
 
     res.render('create', {
