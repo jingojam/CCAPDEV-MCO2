@@ -30,7 +30,7 @@
 
         <div class="button-container">
           <button id="edit-button" class="button save-button">Save Changes</button>
-          <button id="delete-button" class="button delete-button" formaction="/prof_edit/delete-profile" formmethod="POST">Delete Profile</button>
+          <button id="delete-button" class="button delete-button" formaction="/prof_edit/delete-profile?baseId={{user._id}}&userId={{user._id}}" formmethod="POST">Delete Profile</button>      
         </div>
       </form>
     </div>
