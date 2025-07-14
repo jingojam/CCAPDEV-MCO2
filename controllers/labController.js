@@ -7,6 +7,7 @@ exports.renderLabPage = async (req, res) => {
   try {
     const id = req.params.id;
     const baseId = req.query.baseId;
+    const userId = req.query.userId;
 
     const lab = await Lab.findOne({ lab_id: id }).lean();
     if (!lab) {
