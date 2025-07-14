@@ -84,6 +84,11 @@ exports.renderCreatePage = async (req, res) => {
 
   } catch (error) {
     console.error('Error loading create page:', error);
-    res.status(500).send('Internal Server Error');
+    return res.send(`
+      <script>
+        alert("Error loading create page: ${error}");
+        window.history.back();
+      </script>
+    `);
   }
 };

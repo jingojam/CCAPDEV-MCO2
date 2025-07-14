@@ -19,6 +19,11 @@ exports.signinUser = async (req, res) => {
     res.redirect(`/home?userId=${user._id}`);
   } catch (err) {
     console.error('Sign-in error:', err);
-    res.status(500).send('Sign-in  failed.');
+         return res.send(`
+      <script>
+        alert("Sign in failed.");
+        window.history.back();
+      </script>
+    `);
   }
 };

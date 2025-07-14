@@ -12,7 +12,7 @@ exports.signupUser = async (req, res) => {
     const { fname, lname, role, DLSUemail, password } = req.body;
 
     const existing = await User.findOne({ email: DLSUemail });
-    if (existing) return res.status(400).send('Email already registered.');
+    if (existing) return res.send(` <script> alert("Email already registered.");window.history.back();</script>`);
 
     const newUser = new User({
       first_name: fname,
@@ -26,6 +26,6 @@ exports.signupUser = async (req, res) => {
     res.redirect('/sign_in');
   } catch (err) {
     console.error('Sign-up error:', err);
-    res.status(500).send('Sign-up failed.');
+    return res.send(` <script> alert("Sign-up failed.");window.history.back();</script>`);
   }
 };

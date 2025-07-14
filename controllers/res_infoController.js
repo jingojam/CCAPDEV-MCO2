@@ -7,17 +7,32 @@ exports.renderInfoPage = async (req, res) => {
     const userId = req.query.userId;
 
     if (!userId) {
-      return res.status(400).send('No userId parameter set');
+            return res.send(`
+      <script>
+        alert("No userId parameter set.");
+        window.history.back();
+      </script>
+    `);
     }
 
     const user = await User.findById(userId).lean();
     if (!user) {
-      return res.status(404).send('No user found');
+            return res.send(`
+      <script>
+        alert("No user found.");
+        window.history.back();
+      </script>
+    `);
     }
 
     const reservation = await Reservation.findById(reservationId).lean();
     if (!reservation) {
-      return res.status(404).send('Reservation not found');
+            return res.send(`
+      <script>
+        alert("Reservation not found.");
+        window.history.back();
+      </script>
+    `);
     }
 
     // Format values for the template

@@ -5,13 +5,23 @@ exports.renderEditPage = async (req, res) => {
     const userId = req.query.userId;
 
     if(!userId){
-      return res.status(400).send('No userId parameter set');
+          return res.send(`
+      <script>
+        alert("UserId doesn't exist.");
+        window.history.back();
+      </script>
+    `);
     }
 
     const user = await User.findById(userId).lean(); // or whatever your DB uses
 
     if(!user){
-      return res.status(404).send('No user found');
+      return res.send(`
+      <script>
+        alert("No user found.");
+        window.history.back();
+      </script>
+    `);
     }
 
     res.render('res_edit', {
