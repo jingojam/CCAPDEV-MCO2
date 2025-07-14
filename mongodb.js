@@ -119,7 +119,7 @@ async function seedSampleData() {
     ];
 
     const createdUsers = await User.insertMany(users);
-    console.log(`✅ Created ${createdUsers.length} sample users`);
+    console.log(`✓  Created ${createdUsers.length} sample users`);
 
     // Create 5 sample reservations
     const reservations = [
@@ -171,10 +171,10 @@ async function seedSampleData() {
     ];
 
     const createdReservations = await Reservation.insertMany(reservations);
-    console.log(`✅ Created ${createdReservations.length} sample reservations`);
+    console.log(`✓  Created ${createdReservations.length} sample reservations`);
 
   } catch (err) {
-    console.error('❌ Error seeding data:', err);
+    console.error('X Error seeding data:', err);
   } finally {
     // Optional: disconnect after seeding
     // mongoose.connection.close();

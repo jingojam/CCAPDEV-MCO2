@@ -27,7 +27,7 @@ async function generateLabs() {
     try {
         const existingLabs = await Lab.find({ lab_name: { $in: labNames } });
         if (existingLabs.length > 0) {
-            console.log('⚠️ Labs already exist. Skipping insertion.');
+            console.log('!!! Labs already exist. Skipping insertion.');
             return;
         }
 
@@ -103,9 +103,9 @@ async function insertSampleUsers() {
         if (!existingUser) {
             await User.create(userData);
             insertedCount++;
-            console.log(`✅ Inserted user: ${userData.email}`);
+            console.log(`✓  Inserted user: ${userData.email}`);
         } else {
-            console.log(`🟨 User already exists: ${userData.email}`);
+            console.log(` User already exists: ${userData.email}`);
         }
     }
 
@@ -125,7 +125,7 @@ async function insertSampleReservations() {
     const labs = await Lab.find().sort({ lab_id: 1 }).limit(5);
 
     if (!users.length || !labs.length) {
-        console.log('🟨 Need users and labs before adding reservations.');
+        console.log(' Need users and labs before adding reservations.');
         return;
     }
 
@@ -175,7 +175,7 @@ async function insertSampleReservations() {
         }
     }
 
-    console.log(`✅ Inserted ${inserted} new reservation(s).`);
+    console.log(`✓  Inserted ${inserted} new reservation(s).`);
 }
 
 
