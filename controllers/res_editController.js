@@ -127,60 +127,54 @@ exports.submitEdit = async (req, res) => {
     res.status(500).json({ message: 'Something went wrong while saving.' });
   }
 };
-
 exports.deleteReservation = async (req, res) => {
-  try{
+  try {
     const reservationId = req.params.reservationId;
-    const baseId = req.query.baseId;
+    const baseId        = req.query.baseId;          // make sure the link passes this!
 
-    if(!reservationId || !baseId){
+    if (!reservationId || !baseId) {
       return res.status(400).json({ message: 'Missing required parameters.' });
     }
 
-    const user = await User.findById(baseId);
-    const reservation = await Resv.findById(reservationId);
+    // 1) Fetch user and reservation
+    const [user, reservation] = await Promise.all([
+      User.findById(baseId).lean(),
+      Resv.findById(reservationId).lean()
+    ]);
 
-    if(!user || !reservation){
+    if (!user || !reservation) {
       return res.status(404).json({ message: 'User or Reservation not found.' });
     }
 
+    // 2) Build the Date object for the reservation’s start time
+    const startStr   = reservation.startTime;               // e.g. "0930"
+    const schedDate  = new Date(reservation.lab_sched);     // ensure Date
+    schedDate.setHours(+startStr.slice(0, 2));
+    schedDate.setMinutes(+startStr.slice(2));
+    schedDate.setSeconds(0, 0);
+
     const now = Date.now();
-    const request = reservation.lab_sched;
-    const start = reservation.startTime;
-
-    let hours = parseInt(start.substring(0, 2), 10);
-    let minutes = parseInt(start.substring(2, 4), 10);
-    request.setHours(hours);
-    request.setMinutes(minutes);
-    request.setSeconds(0, 0);
-
-    const requestTime = request.getTime();
-
     let canDelete = false;
 
-    if(user.role === "TECHNICIAN"){
-      const tenMinutesAfter = requestTime + 10 * 60 * 1000;
-      canDelete = now <= tenMinutesAfter;
-    } else if(user.role === "STUDENT"){
-      const oneHourBefore = requestTime - 60 * 60 * 1000;
-      canDelete = now <= oneHourBefore;
+    if (user.role === 'TECHNICIAN') {
+      // may delete up to 10 min AFTER start
+      canDelete = now <= schedDate.getTime() + 10 * 60 * 1000;
+    } else if (user.role === 'STUDENT') {
+      // may delete until 1 h BEFORE start
+      canDelete = now <= schedDate.getTime() - 60 * 60 * 1000;
     }
 
-    if(!canDelete){
-      return res.status(403).json({ 
-        message: "You are no longer allowed to delete this reservation." 
-      });
+    if (!canDelete) {
+      return res.status(403).json({ message: 'You are no longer allowed to delete this reservation.' });
     }
 
     await Resv.findByIdAndDelete(reservationId);
 
-  } catch(err){
-    console.error(err);
-    return res.status(500).send(`
-      <script>
-        alert("Something went wrong while deleting.");
-        window.history.back();
-      </script>
-    `);
+
+    return res.json({ message: 'Reservation deleted successfully.' });
+
+  } catch (err) {
+    console.error(' deleteReservation error:', err);
+    return res.status(500).json({ message: 'Something went wrong while deleting.' });
   }
 };
