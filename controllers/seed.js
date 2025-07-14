@@ -77,6 +77,22 @@ async function insertSampleUsers() {
             email: 'admin.user@dlsu.edu.ph',
             password: 'password123',
             description: 'Lab technician at CS department.'
+        },
+        {
+            first_name: 'Juan',
+            last_name: 'Menchaca',
+            role: 'STUDENT',
+            email: 'juan.menchaca@dlsu.edu.ph',
+            password: 'password123',
+            description: 'BS Information Technology student.'
+        },
+        {
+            first_name: 'Rupert',
+            last_name: 'Tabilin',
+            role: 'STUDENT',
+            email: 'rupert.tabilin@dlsu.edu.ph',
+            password: 'password123',
+            description: 'BS Information Systems student'
         }
     ];
 
@@ -99,7 +115,9 @@ async function insertSampleUsers() {
 const SAMPLE_EMAILS = [
     'john.doe@dlsu.edu.ph',
     'jane.smith@dlsu.edu.ph',
-    'admin.user@dlsu.edu.ph'
+    'admin.user@dlsu.edu.ph',
+    'juan.menchaca@dlsu.edu.ph',
+    'rupert.tabilin@dlsu.edu.ph'
 ];
 
 async function insertSampleReservations() {

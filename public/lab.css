@@ -22,6 +22,18 @@ body {
     margin-bottom: 20px;
 }
 
+.reserve-lab.reserved {
+  background-color: #f8d7da;
+  color: #721c24;
+  cursor: not-allowed;
+}
+
+.reserve-lab.reserved:hover {
+  background-color: #f8d7da;
+  color: #721c24;
+  cursor: not-allowed;
+}
+
 .create_options div {
     background-color: #f2f2f2;
     color: #333;
