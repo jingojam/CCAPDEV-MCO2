@@ -107,19 +107,27 @@ exports.deleteReservation = async (req, res) => {
 
     const user = await User.findById(baseId);
 
+    var time;
+
     if(user.role === "TECHNICIAN"){
       const now = Date.now();
       var reservation = await Resv.findById(reservationId);
+      time = 10*60*1000
       const startTime = new Date(reservation.startTime).getTime();
-      if(now < startTime || now > startTime + 10*60*1000){
+
+    } else{
+      time = 60*60*100;
+    }
+
+    if(now < startTime || now > startTime + time){
         return res.send(`
           <script>
             You must wait at least 10 minutes after the start time of the laboratory.
           </script>
         `);
       }
+    
       reservation = await Resv.findByIdAndDelete(reservationId);
-    }
 
     res.json({ message: 'Reservation deleted successfully' });
 
