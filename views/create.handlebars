@@ -10,9 +10,11 @@
         <div class="filter-section">
 
             {{#if isTechnician}}
-                <form id="user-form">
+                <form id="user-form" action="/find" method="POST">
                     <h3>Reserve for:</h3>
-                    <input type="text" name="username" placeholder="Enter student name" />
+                    <input type="hidden" name="baseId" value="{{baseId}}">
+                    <input type="hidden" name="userId" value="{{userId}}">
+                    <input type="text" name="full_name" placeholder="Enter student name" />
                 </form>
             {{/if}}
 

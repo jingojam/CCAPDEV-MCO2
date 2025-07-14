@@ -96,8 +96,3 @@ exports.renderLabPage = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
-
-// POST method for making a reservation
-exports.reserveLab = async (req, res) => {
-
-};
