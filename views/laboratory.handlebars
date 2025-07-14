@@ -166,7 +166,7 @@
           seat: parseInt(seatNumber),   // Convert to number
           lab_url: "{{ lab.lab_url }}",
           reservedBy: baseId,
-          belongsTo: baseId
+          belongsTo: userId // <---------- THIS IS THE PART I CHANGED
         };
 
         console.log("Sending reservation:", reservationData);
