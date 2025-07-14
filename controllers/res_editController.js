@@ -86,6 +86,34 @@ exports.submitEdit = async (req, res) => {
       return res.status(409).json({ message: 'Conflict detected: Another reservation exists at that time and seat.' });
     }
 
+    const reservation = await Resv.findById(reservationId);
+
+    if(!reservation){
+      return res.status(404).json({ message: 'Reservation not found.' });
+    }
+
+    const now = Date.now();
+    const request = reservation.lab_sched; // already a Date object
+    const start = reservation.startTime;   // e.g., "0900"
+
+    //convert "0900" to actual time on lab_sched day
+    let hours = parseInt(start.substring(0, 2), 10);
+    let minutes = parseInt(start.substring(2, 4), 10);
+    request.setHours(hours);
+    request.setMinutes(minutes);
+    request.setSeconds(0, 0);
+    
+
+    let canEdit = false;
+    const oneHourBefore = request.getTime() - 60 * 60 * 1000;
+    canEdit = now <= oneHourBefore;
+
+    if(!canEdit){
+      return res.status(403).json({ 
+        message: "You are no longer allowed to edit this reservation." 
+      });
+    }
+
     await Resv.findByIdAndUpdate(reservationId, {
       startTime: timeStart,
       endTime: timeEnd,
@@ -101,38 +129,58 @@ exports.submitEdit = async (req, res) => {
 };
 
 exports.deleteReservation = async (req, res) => {
-  try {
+  try{
     const reservationId = req.params.reservationId;
     const baseId = req.query.baseId;
 
-    const user = await User.findById(baseId);
-
-    var time;
-
-    if(user.role === "TECHNICIAN"){
-      const now = Date.now();
-      var reservation = await Resv.findById(reservationId);
-      time = 10*60*1000
-      const startTime = new Date(reservation.startTime).getTime();
-
-    } else{
-      time = 60*60*100;
+    if(!reservationId || !baseId){
+      return res.status(400).json({ message: 'Missing required parameters.' });
     }
 
-    if(now < startTime || now > startTime + time){
-        return res.send(`
-          <script>
-            You must wait at least 10 minutes after the start time of the laboratory.
-          </script>
-        `);
-      }
-    
-      reservation = await Resv.findByIdAndDelete(reservationId);
+    const user = await User.findById(baseId);
+    const reservation = await Resv.findById(reservationId);
 
-    res.json({ message: 'Reservation deleted successfully' });
+    if(!user || !reservation){
+      return res.status(404).json({ message: 'User or Reservation not found.' });
+    }
 
-  } catch (err) {
+    const now = Date.now();
+    const request = reservation.lab_sched;
+    const start = reservation.startTime;
+
+    let hours = parseInt(start.substring(0, 2), 10);
+    let minutes = parseInt(start.substring(2, 4), 10);
+    request.setHours(hours);
+    request.setMinutes(minutes);
+    request.setSeconds(0, 0);
+
+    const requestTime = request.getTime();
+
+    let canDelete = false;
+
+    if(user.role === "TECHNICIAN"){
+      const tenMinutesAfter = requestTime + 10 * 60 * 1000;
+      canDelete = now <= tenMinutesAfter;
+    } else if(user.role === "STUDENT"){
+      const oneHourBefore = requestTime - 60 * 60 * 1000;
+      canDelete = now <= oneHourBefore;
+    }
+
+    if(!canDelete){
+      return res.status(403).json({ 
+        message: "You are no longer allowed to delete this reservation." 
+      });
+    }
+
+    await Resv.findByIdAndDelete(reservationId);
+
+  } catch(err){
     console.error(err);
-    res.status(500).json({ message: 'Something went wrong while deleting.' });
+    return res.status(500).send(`
+      <script>
+        alert("Something went wrong while deleting.");
+        window.history.back();
+      </script>
+    `);
   }
 };
