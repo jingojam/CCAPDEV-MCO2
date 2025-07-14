@@ -103,8 +103,24 @@ exports.submitEdit = async (req, res) => {
 exports.deleteReservation = async (req, res) => {
   try {
     const reservationId = req.params.reservationId;
+    const baseId = req.query.baseId;
 
-    await Resv.findByIdAndDelete(reservationId);
+    const user = await User.findById(baseId);
+
+    const reservation = await Resv.findByIdAndDelete(reservationId);
+
+    if(user.role === "TECHNICIAN"){
+      const now = Date.now();
+      const startTime = new Date(reservation.startTime).getTime();
+      if(now < startTime || now > startTime + 10*60*1000){
+        return res.send(`
+          <script>
+            You must wait at least 10 minutes after the start time of the laboratory.
+          </script>
+        `);
+      }
+    }
+
     res.json({ message: 'Reservation deleted successfully' });
 
   } catch (err) {
