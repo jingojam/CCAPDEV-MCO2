@@ -36,6 +36,12 @@ const exphbs = hbars.create({
 
         return sameSeat && resDateString === dateStr && sameTime;
       });
+    },
+    formatDate: function (date) {
+      if (!date) return '';
+
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(date).toLocaleDateString(undefined, options);
     }
   },
   layoutsDir: path.join(__dirname, 'views', 'layouts'),
