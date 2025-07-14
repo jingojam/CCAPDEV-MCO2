@@ -84,6 +84,7 @@ const resEditRoute = require('./routers/res_editRouter.js');
 const resInfoRoute = require('./routers/res_infoRouter.js');
 const profInfoRoute = require('./routers/prof_infoRouter.js');
 const profEditRoute = require('./routers/prof_editRouter.js');
+const search = require('./routers/searchRouter.js');
 const index = require('./routers/indexRouter.js');
 
 // Route for serving user profile image
@@ -119,6 +120,7 @@ app.use('/res_edit', resEditRoute);
 app.use('/res_info', resInfoRoute);
 app.use('/prof_info', profInfoRoute);
 app.use('/prof_edit', profEditRoute);
+app.use('/', search);
 app.use('/index', index);
 
 // Start server

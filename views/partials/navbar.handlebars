@@ -14,8 +14,9 @@
         </div>
     </div>
 
-    <form class="search-form">
-        <input id="search-bar" type="text" placeholder="">
+    <form class="search-form" action="/search-user" method="POST"> 
+        <input type="hidden" name="searcherId" id="searcherId" value="{{user._id}}">
+        <input id="search-bar" name="full_name" type="text" placeholder="Search by full name" required>
         <button id="search-button" type="submit">
             <img src="/resources/search_icon.png" class="search-icon" />
         </button>
