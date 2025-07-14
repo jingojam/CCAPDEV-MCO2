@@ -10,7 +10,12 @@ exports.renderLabPage = async (req, res) => {
 
     const lab = await Lab.findOne({ lab_id: id }).lean();
     if (!lab) {
-      res.status(404).send(`Lab with ID ${id} not found.`);
+      return res.send(`
+      <script>
+        alert("Lab with ID ${id} not found.");
+        window.history.back();
+      </script>
+    `);
       return;
     }
 

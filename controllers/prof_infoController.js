@@ -7,7 +7,12 @@ exports.renderInfoPage = async (req, res) => {
     const userId = req.query.userId;
 
     if(!userId || !baseId){
-      return res.status(400).send('Ids not found');
+      return res.send(`
+      <script>
+        alert("Missing UserID in query.");
+        window.history.back();
+      </script>
+    `);
     }
 
     const user = await User.findById(userId).lean(); // or whatever your DB uses
@@ -24,6 +29,11 @@ exports.renderInfoPage = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error loading profile info');
+    return res.send(`
+      <script>
+        alert("Error loading profile ID.");
+        window.history.back();
+      </script>
+    `);
   }
 };
