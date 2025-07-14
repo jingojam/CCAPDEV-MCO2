@@ -40,7 +40,7 @@ exports.deleteProfile = async (req, res) => {
       return res.send(`<script>alert("User can't be found."); window.history.back();</script>`);
     }
 
-    return res.redirect('/login');
+    return res.redirect('/auth_ref/Welcome.html');
   } catch(err){
     console.log(err);
     return res.send(`<script>alert("Error deleting profile."); window.history.back();</script>`);
