@@ -3,10 +3,16 @@ const Reservation = require('../model/reserveRegistry'); // adjust path
 
 exports.renderInfoPage = async (req, res) => {
   try {
+    const baseId = req.query.baseId;
     const userId = req.query.userId;
 
-    if (!userId) {
-      return res.status(400).send('Missing userId in query');
+    if(!userId || !baseId){
+      return res.send(`
+      <script>
+        alert("Missing UserID in query.");
+        window.history.back();
+      </script>
+    `);
     }
 
     const user = await User.findById(userId).lean(); // or whatever your DB uses
@@ -16,11 +22,18 @@ exports.renderInfoPage = async (req, res) => {
       title: 'View Profile Info',
       userRole: user.role,
       isProfileInfo: true,
+      userId: userId,
+      baseId: baseId,
       user,
       reservations
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error loading profile info');
+    return res.send(`
+      <script>
+        alert("Error loading profile ID.");
+        window.history.back();
+      </script>
+    `);
   }
 };

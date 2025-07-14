@@ -6,20 +6,26 @@ const Reservation = require('../model/reserveRegistry');
 exports.renderLabPage = async (req, res) => {
   try {
     const id = req.params.id;
+    const baseId = req.query.baseId;
     const userId = req.query.userId;
 
     const lab = await Lab.findOne({ lab_id: id }).lean();
     if (!lab) {
-      res.status(404).send(`Lab with ID ${id} not found.`);
+      return res.send(`
+      <script>
+        alert("Lab with ID ${id} not found.");
+        window.history.back();
+      </script>
+    `);
       return;
     }
 
     let user = null;
-    if (userId) {
+    if (baseId) {
       try {
-        user = await User.findById(userId).lean();
+        user = await User.findById(baseId).lean();
       } catch (err) {
-        console.warn('Invalid userId:', userId);
+        console.warn('Invalid baseId:', baseId);
       }
     }
 
@@ -73,13 +79,15 @@ exports.renderLabPage = async (req, res) => {
     res.render('laboratory', {
       userRole: user.role,
       labId: id,
+      userId: userId,
+      baseId: baseId,
       lab,
       days,
       startTimes,
       endTimes,
       seats,
       isLab: true,
-      userId,
+      baseId,
       user,
       reservations
     });

@@ -2,18 +2,20 @@ const User = require('../model/userRegistry'); // adjust path as needed
 
 exports.renderEditPage = async (req, res) => {
   try{
+    const baseId = req.query.baseId;
     const userId = req.query.userId;
 
-    if(!userId){
-      return res.status(400).send('Missing userId in query');
+    if(!userId || !baseId){
+      return res.status(400).send('Ids not found');
     }
-
-    const user = await User.findById(userId).lean();
+    const user = await User.findById(baseId).lean();
 
     res.render('prof_edit', {
       title: 'Edit Profile Info',
       userRole: user.role,
       isProfileEdit: true,
+      userId: userId,
+      baseId: baseId,
       user
     });
   } catch(err){
@@ -25,13 +27,14 @@ exports.renderEditPage = async (req, res) => {
 // POST for deleting user
 exports.deleteProfile = async (req, res) => {
   try{
+    const baseId = req.body.baseId;
     const userId = req.body.userId;
 
-    if(!userId){
-      return res.status(400).send('Missing userId in query');
+    if(!userId || !baseId){
+      return res.status(400).send('Ids not found');
     }
 
-    const deleteUser = await User.findByIdAndDelete(userId);
+    const deleteUser = await User.findByIdAndDelete(baseId);
 
     if(!deleteUser){
       return res.status(404).send('User cannot be found');
@@ -47,13 +50,12 @@ exports.deleteProfile = async (req, res) => {
 // POST for editing name
 exports.saveEdit = async (req, res) => {
   try {
-    const data = req.body;
-    const userId = data.userId;
+    const baseId = req.query.baseId;
+    const userId = req.query.userId;
 
-    if (!userId) {
-      return res.status(400).send('No user Id found');
+    if(!userId || !baseId){
+      return res.status(400).send('Ids not found');
     }
-
     //update fields
     const updateFields = {
       first_name: data.first_name,
@@ -71,7 +73,7 @@ exports.saveEdit = async (req, res) => {
 
     // update
     const updateUser = await User.findByIdAndUpdate(
-      userId,
+      baseId,
       updateFields,
       { new: true }
     );
@@ -80,7 +82,7 @@ exports.saveEdit = async (req, res) => {
       return res.status(404).send('User cannot be found');
     }
 
-    return res.redirect(`/prof_edit?userId=${userId}`);
+    return res.redirect(`/prof_edit?userId=${userId}&baseId=${baseId}`);
   } catch (err) {
     console.log(err);
     res.status(500).send('Error saving profile');

@@ -2,7 +2,7 @@
         <div class="container">
             <div class="create_options">
 
-                <a href="/create?userId={{user._id}}"><div id="option_1">
+                <a href="/create?userId={{userId}}&baseId={{baseId}}"><div id="option_1">
                     <p>< Return to Filter Reservations</p>
                 
                 </div></a>
@@ -150,10 +150,10 @@
         const selectedEndTime = document.getElementById('EndHours').value;
 
         const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('userId');
+        const baseId = urlParams.get('baseId');
 
         // Make sure all required fields are present
-        if (!selectedDate || !selectedStartTime || !selectedEndTime || !userId || !seatNumber) {
+        if (!selectedDate || !selectedStartTime || !selectedEndTime || !baseId || !seatNumber) {
           alert("Please make sure all fields are selected and you are logged in.");
           return;
         }
@@ -165,8 +165,8 @@
           endTime: selectedEndTime,     // e.g., "1000"
           seat: parseInt(seatNumber),   // Convert to number
           lab_url: "{{ lab.lab_url }}",
-          reservedBy: userId,
-          belongsTo: userId
+          reservedBy: baseId,
+          belongsTo: baseId
         };
 
         console.log("Sending reservation:", reservationData);

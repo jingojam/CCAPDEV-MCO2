@@ -4,15 +4,26 @@ const Resv = require('../model/reserveRegistry');
 exports.renderInfoPage = async (req, res) => {
   try {
     const reservationId = req.params.reservationId;
-    const userId = req.query.userId;
+    const baseId = req.query.baseId;
+    const userId =req.query.userId;
 
-    if (!userId) {
-      return res.status(400).send('No userId parameter set');
+    if (!userId || !baseId){
+            return res.send(`
+      <script>
+        alert("No userId parameter set.");
+        window.history.back();
+      </script>
+    `);
     }
 
-    const user = await User.findById(userId).lean();
+    const user = await User.findById(baseId).lean();
     if (!user) {
-      return res.status(404).send('No user found');
+            return res.send(`
+      <script>
+        alert("No user found.");
+        window.history.back();
+      </script>
+    `);
     }
 
     const resv = await Resv.findById(reservationId).lean();
@@ -30,6 +41,8 @@ exports.renderInfoPage = async (req, res) => {
       title: 'Info - Reservation',
       userRole: user.role,
       isResInfo: true,
+      userId: userId,
+      baseId: baseId,
       user,
       selectedDate,
       selectedTime,
