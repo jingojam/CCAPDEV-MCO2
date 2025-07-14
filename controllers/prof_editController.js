@@ -27,8 +27,8 @@ exports.renderEditPage = async (req, res) => {
 // POST for deleting user
 exports.deleteProfile = async (req, res) => {
   try{
-    const baseId = req.body.baseId;
-    const userId = req.body.userId;
+    const baseId = req.query.baseId;
+    const userId = req.query.userId;
 
     if(!userId || !baseId){
       return res.status(400).send('Ids not found');
@@ -47,31 +47,32 @@ exports.deleteProfile = async (req, res) => {
   }
 };
 
-// POST for editing name
+// POST for editing info
 exports.saveEdit = async (req, res) => {
   try {
-    const baseId = req.query.baseId;
-    const userId = req.query.userId;
+    const baseId = req.body.baseId;
+    const userId = req.body.userId;
 
-    if(!userId || !baseId){
+    if (!baseId || !userId) {
       return res.status(400).send('Ids not found');
     }
-    //update fields
+
+    const data = req.body;
+
+    // Update fields
     const updateFields = {
       first_name: data.first_name,
       last_name: data.last_name,
       description: data.description
     };
 
-    // if custom profile pic exists
     if (data.profile_pic_base64 && data.profile_pic_base64.trim() !== '') {
       updateFields.profileImage = {
         data: Buffer.from(data.profile_pic_base64, 'base64'),
-        contentType: 'image/jpeg' 
+        contentType: 'image/jpeg'
       };
     }
 
-    // update
     const updateUser = await User.findByIdAndUpdate(
       baseId,
       updateFields,
@@ -82,7 +83,7 @@ exports.saveEdit = async (req, res) => {
       return res.status(404).send('User cannot be found');
     }
 
-    return res.redirect(`/prof_edit?userId=${userId}&baseId=${baseId}`);
+    return res.redirect(`/prof_edit?userId=${userId || baseId}&baseId=${baseId}`);
   } catch (err) {
     console.log(err);
     res.status(500).send('Error saving profile');
