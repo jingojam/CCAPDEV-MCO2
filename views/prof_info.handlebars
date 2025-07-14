@@ -1,7 +1,7 @@
 
 <div class="container">
     <div class="create_options">
-            <a href="/home?userId={{user._id}}">
+            <a href="/home?userId={{baseId}}&baseId={{baseId}}">
                 <div id="option_1">
                     <p>< Return to Home</p>
                 </div>
@@ -22,7 +22,7 @@
 
             <div class="manage-profile">
                 <button id="edit-button" class="button" 
-                    onclick="location.href='/prof_edit?userId={{user._id}}'">Edit Profile</button>
+                    onclick="location.href='/prof_edit?userId={{userId}}&baseId={{baseId}}'">Edit Profile</button>
             </div>
         </div>
 

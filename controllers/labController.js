@@ -6,7 +6,7 @@ const Reservation = require('../model/reserveRegistry');
 exports.renderLabPage = async (req, res) => {
   try {
     const id = req.params.id;
-    const userId = req.query.userId;
+    const baseId = req.query.baseId;
 
     const lab = await Lab.findOne({ lab_id: id }).lean();
     if (!lab) {
@@ -15,11 +15,11 @@ exports.renderLabPage = async (req, res) => {
     }
 
     let user = null;
-    if (userId) {
+    if (baseId) {
       try {
-        user = await User.findById(userId).lean();
+        user = await User.findById(baseId).lean();
       } catch (err) {
-        console.warn('Invalid userId:', userId);
+        console.warn('Invalid baseId:', baseId);
       }
     }
 
@@ -73,13 +73,15 @@ exports.renderLabPage = async (req, res) => {
     res.render('laboratory', {
       userRole: user.role,
       labId: id,
+      userId: userId,
+      baseId: baseId,
       lab,
       days,
       startTimes,
       endTimes,
       seats,
       isLab: true,
-      userId,
+      baseId,
       user,
       reservations
     });

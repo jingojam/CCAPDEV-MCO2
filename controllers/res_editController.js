@@ -2,13 +2,14 @@ const User = require('../model/userRegistry'); // adjust path
 
 exports.renderEditPage = async (req, res) => {
   try{
+    const baseId = req.query.baseId;
     const userId = req.query.userId;
 
-    if(!userId){
-      return res.status(400).send('No userId parameter set');
+    if(!userId || !baseId){
+      return res.status(400).send('Ids not found');
     }
 
-    const user = await User.findById(userId).lean(); // or whatever your DB uses
+    const user = await User.findById(baseId).lean(); // or whatever your DB uses
 
     if(!user){
       return res.status(404).send('No user found');
@@ -18,6 +19,8 @@ exports.renderEditPage = async (req, res) => {
       title: 'Edit - Reservation',
       userRole: user.role,
       isResEdit: true,
+      userId: userId,
+      baseId: baseId,
       user
     });
   } catch(err){

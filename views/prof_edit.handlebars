@@ -1,6 +1,6 @@
 <div class="container">
   <div class="create_options">
-    <a href="/prof_info?userId={{user._id}}">
+    <a href="/prof_info?userId={{userId}}&baseId={{baseId}}">
       <div id="option_1">
         <p>< Return to User Profile</p>
       </div>
@@ -12,7 +12,7 @@
       <img src="/user/{{user._id}}/image" alt="Profile Picture" class="profile-pic" onerror="this.onerror=null; this.src='/resources/profile_stock.png';">
 
       <form action="/prof_edit/save-edit" method="POST">
-        <input type="hidden" name="userId" value="{{user._id}}">
+        <input type="hidden" name="baseId" value="{{user._id}}">
 
         <!-- Profile Picture Upload -->
         <h2>Update Profile Picture</h2>

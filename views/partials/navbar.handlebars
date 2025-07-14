@@ -1,10 +1,10 @@
 <div class="vertical-label">{{userRole}}</div>
 
 <div class="header">
-    <a href="/home?userId={{user._id}}" id="website_name">@LabRes</a>
+    <a href="/home?userId={{baseId}}&baseId={{baseId}}" id="website_name">@LabRes</a>
 
     <button class="dropbtn" onclick="myFunction()">
-        <img src="/user/{{user._id}}/image" alt="Profile Picture" class="profile-pic" onerror="this.onerror=null; this.src='/resources/profile_stock.png';">
+        <img src="/user/{{baseId}}/image" alt="Profile Picture" class="profile-pic" onerror="this.onerror=null; this.src='/resources/profile_stock.png';">
     </button>
 
     <div class="profile-dropdown">
@@ -15,7 +15,8 @@
     </div>
 
     <form class="search-form" action="/search-user" method="POST"> 
-        <input type="hidden" name="searcherId" id="searcherId" value="{{user._id}}">
+        <input type="hidden" name="baseId" id="baseId" value="{{baseId}}">
+        <input type="hidden" name="userId" id="userId" value="{{userId}}">
         <input id="search-bar" name="full_name" type="text" placeholder="Search by full name" required>
         <button id="search-button" type="submit">
             <img src="/resources/search_icon.png" class="search-icon" />
@@ -26,8 +27,10 @@
 <script>
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get('userId');
+  const baseId = urlParams.get('baseId');
+  
   if (userId) {
     const profileLink = document.getElementById('profile-link');
-    profileLink.href = `/prof_info?userId=${userId}`;
+    profileLink.href = `/prof_info?userId=${userId}&baseId=${baseId}`;
   }
 </script>

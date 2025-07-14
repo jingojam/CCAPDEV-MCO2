@@ -4,8 +4,15 @@ const User = require('../model/userRegistry');
 exports.renderCreatePage = async (req, res) => {
   try {
     const labs = await Lab.find();
+    console.log(req.query);
+    const baseId = req.query.baseId;
     const userId = req.query.userId;
-    const user = await User.findById(userId).lean();
+    
+    if(!userId || !baseId){
+      return res.status(400).send('Ids not found');
+    }
+
+    const user = await User.findById(baseId).lean();
 
     const isTechnician = user.role === 'TECHNICIAN';
 
@@ -24,8 +31,7 @@ exports.renderCreatePage = async (req, res) => {
         name: lab.lab_name,
         sched: lab.lab_sched?.map(d => new Date(d).toDateString()),
         occupancy: `${occupied} / ${total} occupied`,
-        // 🔗 Append userId in the lab link
-        link: `/laboratory/${lab.lab_id}?userId=${user._id}`
+        link: `/laboratory/${lab.lab_id}?baseId=${user._id}`
       };
     });
 
@@ -75,6 +81,8 @@ exports.renderCreatePage = async (req, res) => {
       userRole: user.role,
       isTechnician,
       isCreate: true,
+      userId: userId,
+      baseId: baseId,
       user,
       days,
       startTimes,

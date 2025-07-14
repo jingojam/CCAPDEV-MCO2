@@ -3,16 +3,17 @@ const Reservation = require('../model/reserveRegistry');
 
 exports.renderViewPage = async (req, res) => {
   try {
+    const baseId = req.query.baseId;
     const userId = req.query.userId;
 
-    if (!userId) {
-      return res.status(400).send('userId parameter missing');
+    if(!userId || !baseId){
+      return res.status(400).send('Ids not found');
     }
 
-    const user = await User.findById(userId).lean();
+    const user = await User.findById(baseId).lean();
     const now = new Date();
 
-    const reservations = await Reservation.find({ belongsTo: userId }).lean();
+    const reservations = await Reservation.find({ belongsTo: baseId }).lean();
 
     const currentReservations = [];
     const completedReservations = [];
@@ -36,12 +37,12 @@ exports.renderViewPage = async (req, res) => {
       if (combinedEnd > now) {
         currentReservations.push({
           ...commonDetails,
-          link: `/res_edit/${res._id}?userId=${user._id}`
+          link: `/res_edit/${res._id}?userId=${userId}&baseId=${user._id}`
         });
       } else {
         completedReservations.push({
           ...commonDetails,
-          link: `/res_info/${res._id}?userId=${user._id}`
+          link: `/res_info/${res._id}?userId=${userId}&baseId=${user._id}`
         });
       }
     });
@@ -50,6 +51,8 @@ exports.renderViewPage = async (req, res) => {
       title: 'View Reservations',
       userRole: user.role,
       isView: true,
+      userId: userId,
+      baseId: baseId,
       user,
       currentReservations,
       completedReservations
