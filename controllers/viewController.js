@@ -13,7 +13,7 @@ exports.renderViewPage = async (req, res) => {
     const user = await User.findById(baseId).lean();
     const now = new Date();
 
-    const reservations = await Reservation.find({ belongsTo: baseId }).lean();
+    const reservations = await Reservation.find({ reservedBy: baseId }).lean();
 
     const currentReservations = [];
     const completedReservations = [];
