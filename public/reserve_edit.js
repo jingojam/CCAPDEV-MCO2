@@ -39,7 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
           } else {
             Swal.fire('Saved!', data.message, 'success').then(() => {
               const userId = new URLSearchParams(window.location.search).get('userId');
-              window.location.href = `/view?userId=${userId}`;
+              const baseId = new URLSearchParams(window.location.search).get('baseId');
+              window.location.href = `/view?userId=${userId}&baseId=${baseId}`;
             });
           }
         })
@@ -61,15 +62,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (result.isConfirmed) {
         const reservationId = document.getElementById('reservation-id').value;
         const userId = new URLSearchParams(window.location.search).get('userId');
+        const baseId = new URLSearchParams(window.location.search).get('baseId');
 
-        fetch(`/res_edit/${reservationId}/delete?userId=${userId}`, {
+        fetch(`/res_edit/${reservationId}/delete?userId=${userId}&baseId=${baseId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' }
         })
         .then(res => res.json())
         .then(response => {
           Swal.fire('Deleted!', response.message, 'success').then(() => {
-            window.location.href = `/view?userId=${userId}`;
+            window.location.href = `/view?userId=${userId}&baseId=${baseId}`;
           });
         })
         .catch(err => {

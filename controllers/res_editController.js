@@ -19,8 +19,13 @@ exports.renderEditPage = async (req, res) => {
   try {
     const reservationId = req.params.reservationId;
     const userId = req.query.userId;
+    const baseId = req.query.baseId;
 
-    const user = await User.findById(userId).lean();
+    if(!userId || !baseId){
+      res.status(400).send('Ids missing in query');
+    }
+
+    const user = await User.findById(baseId).lean();
     const resv = await Resv.findById(reservationId).lean();
 
     const selectedDate = new Date(resv.lab_sched).toISOString().split('T')[0];
@@ -37,6 +42,8 @@ exports.renderEditPage = async (req, res) => {
     res.render('res_edit', {
       title: 'Edit - Reservation',
       isResEdit: true,
+      userId: userId,
+      baseId: baseId,
       user,
       userRole: user.role,
       reservationId,
@@ -61,7 +68,6 @@ exports.submitEdit = async (req, res) => {
   try {
     const { timeStart, timeEnd, seat } = req.body;
     const reservationId = req.params.reservationId;
-    const userId = req.query.userId;
 
     const current = await Resv.findById(reservationId).lean();
     if (!current) return res.status(404).json({ message: 'Reservation not found' });
