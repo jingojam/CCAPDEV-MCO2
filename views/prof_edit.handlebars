@@ -13,7 +13,7 @@
 
       <form action="/prof_edit/save-edit" method="POST">
         <input type="hidden" name="baseId" value="{{user._id}}">
-
+        <input type="hidden" name="userId" value="{{user._id}}">
         <!-- Profile Picture Upload -->
         <h2>Update Profile Picture</h2>
         <input type="file" id="pfpInput" accept="image/*">

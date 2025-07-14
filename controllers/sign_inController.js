@@ -12,8 +12,8 @@ exports.signinUser = async (req, res) => {
     const { DLSUemail, password } = req.body;
     const user = await User.findOne({ email: DLSUemail });
 
-    if (!user) return res.status(401).send('No account found.');
-    if (user.password !== password) return res.status(401).send('Incorrect password.');
+    if (!user) return res.send(`<script>alert("No account found."); window.history.back();</script>`); 
+    if (user.password !== password) return res.send(`<script>alert("Incorrect Password."); window.history.back();</script>`);
 
     console.log(`Redirecting to /prof_info?baseId=${user._id}`);
     res.redirect(`/home?userId=${user._id}&baseId=${user._id}`);

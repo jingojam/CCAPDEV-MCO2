@@ -1,4 +1,4 @@
-const User = require('../model/userRegistry'); // adjust path as needed
+const User = require('../model/userRegistry'); 
 
 exports.renderEditPage = async (req, res) => {
   try{
@@ -6,7 +6,7 @@ exports.renderEditPage = async (req, res) => {
     const userId = req.query.userId;
 
     if(!userId || !baseId){
-      return res.status(400).send('Ids not found');
+      return res.send(`<script>alert("Id's not found."); window.history.back();</script>`);
     }
     const user = await User.findById(baseId).lean();
 
@@ -20,7 +20,7 @@ exports.renderEditPage = async (req, res) => {
     });
   } catch(err){
     console.error(err);
-    res.status(500).send('Error loading profile info');
+    return res.send(`<script>alert("Error loading profile info."); window.history.back();</script>`);
   }
 };
 
@@ -31,19 +31,19 @@ exports.deleteProfile = async (req, res) => {
     const userId = req.query.userId;
 
     if(!userId || !baseId){
-      return res.status(400).send('Ids not found');
+      return res.send(`<script>alert("Id's not found."); window.history.back();</script>`);
     }
 
     const deleteUser = await User.findByIdAndDelete(baseId);
 
     if(!deleteUser){
-      return res.status(404).send('User cannot be found');
+      return res.send(`<script>alert("User can't be found."); window.history.back();</script>`);
     }
 
     return res.redirect('/login');
   } catch(err){
     console.log(err);
-    res.status(500).send('Error deleting profile');
+    return res.send(`<script>alert("Error deleting profile."); window.history.back();</script>`);
   }
 };
 
@@ -54,7 +54,7 @@ exports.saveEdit = async (req, res) => {
     const userId = req.body.userId;
 
     if (!baseId || !userId) {
-      return res.status(400).send('Ids not found');
+      return res.send(`<script>alert("Ids not found."); window.history.back();</script>`);
     }
 
     const data = req.body;
@@ -80,7 +80,7 @@ exports.saveEdit = async (req, res) => {
     );
 
     if (!updateUser) {
-      return res.status(404).send('User cannot be found');
+      return res.send(`<script>alert("User can't be found."); window.history.back();</script>`);
     }
 
     return res.redirect(`/prof_edit?userId=${userId || baseId}&baseId=${baseId}`);

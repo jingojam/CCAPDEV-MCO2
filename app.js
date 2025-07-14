@@ -65,11 +65,11 @@ const runSeeder = require('./controllers/seed.js'); // Import seeder
 
 mongoose.connect(mongoURI)
     .then(() => {
-        console.log('✅ Connected to MongoDB');
+        console.log('✓  Connected to MongoDB');
         runSeeder(); // Run the seeder after successful connection
     })
     .catch(err => {
-        console.error('❌ MongoDB connection error:', err);
+        console.error('X MongoDB connection error:', err);
     });
 
 const User = require('./model/userRegistry');
@@ -99,14 +99,14 @@ app.get('/user/:id/image', async (req, res) => {
         const user = await User.findById(req.params.id);
 
         if (!user || !user.profileImage || !user.profileImage.data) {
-            return res.status(404).send('No profile image found');
+            return res.send(`<script>alert("No profile image found"); window.history.back();</script>`);
         }
 
         res.contentType(user.profileImage.contentType);
         res.send(user.profileImage.data);
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error loading profile image');
+         return res.send(`<script>alert("Error loading profile image.); window.history.back();</script>`);
     }
 });
 

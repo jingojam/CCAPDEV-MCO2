@@ -1,5 +1,5 @@
-const User = require('../model/userRegistry'); // adjust path as needed
-const Reservation = require('../model/reserveRegistry'); // adjust path
+const User = require('../model/userRegistry'); 
+const Reservation = require('../model/reserveRegistry');
 
 exports.renderInfoPage = async (req, res) => {
   try {

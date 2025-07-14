@@ -6,7 +6,7 @@ exports.renderCreatePage = async (req, res) => {
     const userId = req.query.userId;
 
     if(!userId || !baseId){
-      return res.status(400).send('Ids not found');
+      return res.send(`<script>alert("Id's not found."); window.history.back();</script>`);
     }
 
     const user = await User.findById(baseId).lean();
