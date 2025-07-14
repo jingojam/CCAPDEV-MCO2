@@ -2,18 +2,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveButton = document.getElementById("save-button");
   const cancelButton = document.getElementById("cancel-button");
 
-  // Extract values from dropdowns
   function getFormData() {
     return {
-      date: document.getElementById("detail-date").value,
       timeStart: document.getElementById("detail-time-start").value,
       timeEnd: document.getElementById("detail-time-end").value,
-      lab: document.getElementById("detail-lab").value,
       seat: document.getElementById("detail-seat").value
     };
   }
 
-  saveButton.addEventListener("click", () => {
+  saveButton.addEventListener("click", (event) => {
+    event.preventDefault();
+
     Swal.fire({
       title: 'Save changes?',
       icon: 'question',
@@ -23,16 +22,30 @@ document.addEventListener("DOMContentLoaded", () => {
       if (result.isConfirmed) {
         const formData = getFormData();
 
-        fetch('/res_edit/save', {
+        fetch(window.location.pathname + window.location.search, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
         })
-        .then(res => res.json())
-        .then(response => {
-          Swal.fire('Saved!', response.message, 'success').then(() => {
-            window.location.href = '/view';
-          });
+        .then(async (res) => {
+          const data = await res.json();
+
+          if (!res.ok) {
+            const errorParagraph = document.querySelector('#reservation-details-container p.error-message');
+            if (errorParagraph) {
+              errorParagraph.textContent = data.message;
+              errorParagraph.style.display = 'block';
+            }
+          } else {
+            Swal.fire('Saved!', data.message, 'success').then(() => {
+              const userId = new URLSearchParams(window.location.search).get('userId');
+              window.location.href = `/view?userId=${userId}`;
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          Swal.fire('Error!', 'Something went wrong.', 'error');
         });
       }
     });
@@ -46,18 +59,22 @@ document.addEventListener("DOMContentLoaded", () => {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        const formData = getFormData();
+        const reservationId = document.getElementById('reservation-id').value;
+        const userId = new URLSearchParams(window.location.search).get('userId');
 
-        fetch('/res_edit/delete', {
+        fetch(`/res_edit/${reservationId}/delete?userId=${userId}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
+          headers: { 'Content-Type': 'application/json' }
         })
         .then(res => res.json())
         .then(response => {
           Swal.fire('Deleted!', response.message, 'success').then(() => {
-            window.location.href = '/view';
+            window.location.href = `/view?userId=${userId}`;
           });
+        })
+        .catch(err => {
+          console.error(err);
+          Swal.fire('Error!', 'Something went wrong.', 'error');
         });
       }
     });

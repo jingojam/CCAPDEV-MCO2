@@ -1,28 +1,108 @@
-const User = require('../model/userRegistry'); // adjust path
+const User = require('../model/userRegistry');
+const Resv = require('../model/reserveRegistry');
+
+function generateTimeOptions(startHour, endHour, includeHalfHour, isEnd = false) {
+  const times = [];
+  for (let h = startHour; h <= endHour; h++) {
+    for (let m of [0, 30]) {
+      if (!includeHalfHour && m === 30) continue;
+      const value = `${h.toString().padStart(2, '0')}${m === 0 ? '00' : '30'}`;
+      const label = `${h.toString().padStart(2, '0')}:${m === 0 ? '00' : '30'}`;
+      if (isEnd && value === "0900") continue;
+      times.push({ value, label });
+    }
+  }
+  return times;
+}
 
 exports.renderEditPage = async (req, res) => {
-  try{
+  try {
+    const reservationId = req.params.reservationId;
     const userId = req.query.userId;
 
-    if(!userId){
-      return res.status(400).send('No userId parameter set');
-    }
+    const user = await User.findById(userId).lean();
+    const resv = await Resv.findById(reservationId).lean();
 
-    const user = await User.findById(userId).lean(); // or whatever your DB uses
+    const selectedDate = new Date(resv.lab_sched).toISOString().split('T')[0];
+    const selectedStart = resv.startTime;
+    const selectedEnd = resv.endTime;
+    const selectedLab = resv.lab_name;
+    const selectedSeat = String(resv.seat);
+    const requestTime = new Date(resv.requestDate).toISOString();
 
-    if(!user){
-      return res.status(404).send('No user found');
-    }
+    const startTimes = generateTimeOptions(9, 15, true);
+    const endTimes = generateTimeOptions(9, 16, true, true);
+    const seats = Array.from({ length: 35 }, (_, i) => `${i + 1}`);
 
     res.render('res_edit', {
       title: 'Edit - Reservation',
-      userRole: user.role,
       isResEdit: true,
-      user
+      user,
+      userRole: user.role,
+      reservationId,
+      selectedDate,
+      selectedStart,
+      selectedEnd,
+      selectedLab,
+      selectedSeat,
+      requestTime,
+      startTimes,
+      endTimes,
+      seats,
+      error: null
     });
-  } catch(err){
-    console.log(err);
+  } catch (err) {
+    console.error(err);
     res.status(500).send('Server Error');
   }
 };
 
+exports.submitEdit = async (req, res) => {
+  try {
+    const { timeStart, timeEnd, seat } = req.body;
+    const reservationId = req.params.reservationId;
+    const userId = req.query.userId;
+
+    const current = await Resv.findById(reservationId).lean();
+    if (!current) return res.status(404).json({ message: 'Reservation not found' });
+
+    const conflict = await Resv.findOne({
+      _id: { $ne: reservationId },
+      lab_name: current.lab_name,
+      lab_sched: current.lab_sched,
+      seat: seat,
+      $or: [
+        { startTime: { $lt: timeEnd }, endTime: { $gt: timeStart } }
+      ]
+    });
+
+    if (conflict) {
+      return res.status(409).json({ message: 'Conflict detected: Another reservation exists at that time and seat.' });
+    }
+
+    await Resv.findByIdAndUpdate(reservationId, {
+      startTime: timeStart,
+      endTime: timeEnd,
+      seat: seat
+    });
+
+    res.json({ message: 'Reservation updated successfully' });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong while saving.' });
+  }
+};
+
+exports.deleteReservation = async (req, res) => {
+  try {
+    const reservationId = req.params.reservationId;
+
+    await Resv.findByIdAndDelete(reservationId);
+    res.json({ message: 'Reservation deleted successfully' });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Something went wrong while deleting.' });
+  }
+};

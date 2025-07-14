@@ -1,5 +1,5 @@
 const User = require('../model/userRegistry');
-const Reservation = require('../model/reserveRegistry');
+const Resv = require('../model/reserveRegistry');
 
 exports.renderInfoPage = async (req, res) => {
   try {
@@ -15,17 +15,16 @@ exports.renderInfoPage = async (req, res) => {
       return res.status(404).send('No user found');
     }
 
-    const reservation = await Reservation.findById(reservationId).lean();
-    if (!reservation) {
+    const resv = await Resv.findById(reservationId).lean();
+    if (!resv) {
       return res.status(404).send('Reservation not found');
     }
 
     // Format values for the template
-    const selectedDate = new Date(reservation.lab_sched).toISOString().split('T')[0]; // yyyy-mm-dd
-    const selectedTime = formatTimeRange(reservation.startTime, reservation.endTime);
-    const selectedLab = reservation.lab_name;
-    const selectedSeat = reservation.seat;
-    const requestTime = new Date(reservation.requestDate).toISOString(); // Full UTC timestamp
+    const selectedDate = new Date(resv.lab_sched).toISOString().split('T')[0]; // yyyy-mm-dd
+    const selectedTime = formatTimeRange(resv.startTime, resv.endTime);
+    const selectedLab = resv.lab_name; const selectedSeat = resv.seat;
+    const requestTime = new Date(resv.requestDate).toISOString(); // Full UTC timestamp
 
     res.render('res_info', {
       title: 'Info - Reservation',

@@ -115,8 +115,16 @@ async function insertSampleReservations() {
 
     users.forEach(user => {
         labs.forEach((lab, idx) => {
-            const day = getUTCDateOffset(idx); // Use raw UTC date
+            let offset;
+            if (idx < 3) {
+                // 3 active: today + 1, 2, 3 days
+                offset = idx + 1;
+            } else {
+                // 2 completed: today - 1, -2 days
+                offset = -(idx - 2);
+            }
 
+            const day = getUTCDateOffset(offset); // Use raw UTC date
             const start = 900 + idx * 100;
             const end = start + 100;
 
@@ -151,6 +159,7 @@ async function insertSampleReservations() {
 
     console.log(`✅ Inserted ${inserted} new reservation(s).`);
 }
+
 
 async function runSeeder() {
     try {

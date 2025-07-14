@@ -9,16 +9,19 @@
 
   <div class="create_content">
     <div id="reservation-details-container">
-      <form>
-        <!-- Date -->
+      <form method="POST" action="/res_edit/{{reservationId}}?userId={{user._id}}">
+        <!-- Hidden fields for read-only values -->
+        <input type="hidden" name="date" value="{{selectedDate}}">
+        <input type="hidden" name="laboratory" value="{{selectedLab}}">
+        <input type="hidden" id="reservation-id" value="{{reservationId}}">
+
+
+        <!-- Date (READ-ONLY) -->
         <div class="detail-item">
           <label class="detail-label">Date of reservation:</label>
           <div class="detail-value">
-            <select id="detail-date" class="editable-dropdown" name="date">
-              {{#each dates}}
-                <option value="{{this}}" {{#ifEquals this ../selectedDate}}
-                    selected{{/ifEquals}}>{{this}}</option>
-              {{/each}}
+            <select disabled>
+              <option value="{{selectedDate}}" selected>{{selectedDate}}</option>
             </select>
           </div>
         </div>
@@ -29,8 +32,9 @@
           <div class="detail-value">
             <select id="detail-time-start" class="editable-dropdown" name="timeStart">
               {{#each startTimes}}
-                <option value="{{this}}" {{#ifEquals this ../selectedStart}}
-                    selected{{/ifEquals}}>{{this}}</option>
+                <option value="{{this.value}}" {{#ifEquals this.value ../selectedStart}}selected{{/ifEquals}}>
+                  {{this.label}}
+                </option>
               {{/each}}
             </select>
           </div>
@@ -42,22 +46,20 @@
           <div class="detail-value">
             <select id="detail-time-end" class="editable-dropdown" name="timeEnd">
               {{#each endTimes}}
-                <option value="{{this}}" {{#ifEquals this ../selectedEnd}}
-                    selected{{/ifEquals}}>{{this}}</option>
+                <option value="{{this.value}}" {{#ifEquals this.value ../selectedEnd}}selected{{/ifEquals}}>
+                  {{this.label}}
+                </option>
               {{/each}}
             </select>
           </div>
         </div>
 
-        <!-- Laboratory -->
+        <!-- Laboratory (READ-ONLY) -->
         <div class="detail-item">
           <label class="detail-label">Selected Laboratory:</label>
           <div class="detail-value">
-            <select id="detail-lab" class="editable-dropdown" name="laboratory">
-              {{#each labs}}
-                <option value="{{this}}" {{#ifEquals this ../selectedLab}}
-                    selected{{/ifEquals}}>{{this}}</option>
-              {{/each}}
+            <select disabled>
+              <option value="{{selectedLab}}" selected>{{selectedLab}}</option>
             </select>
           </div>
         </div>
@@ -68,25 +70,79 @@
           <div class="detail-value">
             <select id="detail-seat" class="editable-dropdown" name="seat">
               {{#each seats}}
-                <option value="{{this}}" {{#ifEquals this ../selectedSeat}}
-                    selected{{/ifEquals}}>{{this}}</option>
+                <option value="{{this}}" {{#ifEquals this ../selectedSeat}}selected{{/ifEquals}}>
+                  {{this}}
+                </option>
               {{/each}}
             </select>
           </div>
         </div>
+
+        <!-- Request Time -->
+        <p class="time" style="font-style: italic;">
+          <strong class="date-label">Date and Time of Request:</strong>
+          <span id="request-time">{{requestTime}}</span>
+        </p>
+
+        {{#if error}}
+          <p class="error-message" style="color: red; text-align: center; margin-top: 10px;">{{error}}</p>
+        {{else}}
+          <p class="error-message" style="display: none;"></p>
+        {{/if}}
+
+        <!-- Action Buttons -->
+        <div class="button-container">
+          <button type="button" class="save-button" id="save-button">Save</button>
+          <button type="button" class="cancel-button" id="cancel-button">Delete</button>
+        </div>
       </form>
-
-      <p class="time" style="font-style: italic;">
-        <strong class="date-label">Date and Time of Request:</strong>
-        <span id="request-time" style="font-style: italic;">{{requestTime}}</span>
-      </p>
-
-      <div class="button-container">
-        <button type="button" class="cancel-button" id="cancel-button">Delete</button>
-        <button type="button" class="save-button" id="save-button">Save</button>
-      </div>
     </div>
   </div>
 </div>
 
 <script src="/reserve_edit.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    let selectedStartTime = null;
+    let selectedEndTime = null;
+
+    const hoursEl    = document.getElementById('detail-time-start');
+    const endHoursEl = document.getElementById('detail-time-end');
+
+    if (!hoursEl || !endHoursEl) return;
+
+    function filterEndTimes() {
+      const start = Number(selectedStartTime);
+      let firstValid = null;
+
+      Array.from(endHoursEl.options).forEach(opt => {
+        const end = Number(opt.value);
+        const allow = end > start;
+        opt.disabled = !allow;
+        opt.hidden = !allow;
+        if (allow && firstValid === null) firstValid = opt;
+      });
+
+      if (selectedEndTime && Number(selectedEndTime) <= start) {
+        if (firstValid) {
+          firstValid.selected = true;
+          selectedEndTime = firstValid.value;
+        }
+      }
+    }
+
+    hoursEl.addEventListener('change', function () {
+      selectedStartTime = this.value;
+      filterEndTimes();
+    });
+
+    endHoursEl.addEventListener('change', function () {
+      selectedEndTime = this.value;
+    });
+
+    selectedStartTime = hoursEl.value;
+    selectedEndTime = endHoursEl.value;
+    filterEndTimes();
+  });
+</script>
