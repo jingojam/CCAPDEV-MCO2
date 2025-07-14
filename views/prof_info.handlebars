@@ -20,38 +20,42 @@
                 </div>
             </div>
 
-            <div class="manage-profile">
-                <button id="edit-button" class="button" 
-                    onclick="location.href='/prof_edit?userId={{userId}}&baseId={{baseId}}'">Edit Profile</button>
-            </div>
+            {{#ifEquals userId baseId}}
+                <div class="manage-profile">
+                    <button id="edit-button" class="button" 
+                        onclick="location.href='/prof_edit?userId={{userId}}&baseId={{baseId}}'">Edit Profile</button>
+                </div>
+            {{/ifEquals}}
         </div>
 
         <!-- Reservations Section -->
-        <div class="reservations-info">
-            <h2>Current Reservations</h2>
-            {{#if reservations.length}}
-                <table class="reservation-table">
-                    <thead>
-                        <tr>
-                            <th>Laboratory</th>
-                            <th>Seat</th>
-                            <th>Date & Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#each reservations}}
+        {{#ifEquals userId baseId}}
+            <div class="reservations-info">
+                <h2>Current Reservations</h2>
+                {{#if reservations.length}}
+                    <table class="reservation-table">
+                        <thead>
                             <tr>
-                                <td>{{lab_name}}</td>
-                                <td>{{seat}}</td>
-                                <td>{{lab_sched}} {{startTime}} {{endTime}}</td>
+                                <th>Laboratory</th>
+                                <th>Seat</th>
+                                <th>Date & Time</th>
                             </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
-            {{else}}
-                <p>No Reservations Found.</p>
-            {{/if}}
-        </div>
+                        </thead>
+                        <tbody>
+                            {{#each reservations}}
+                                <tr>
+                                    <td>{{lab_name}}</td>
+                                    <td>{{seat}}</td>
+                                    <td>{{lab_sched}} {{startTime}} {{endTime}}</td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                {{else}}
+                    <p>No Reservations Found.</p>
+                {{/if}}
+            </div>
+        {{/ifEquals}}
 
     </div>
 </div>
