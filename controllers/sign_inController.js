@@ -12,9 +12,11 @@ exports.signinUser = async (req, res) => {
   try {
     const { DLSUemail, password } = req.body;
     const user = await User.findOne({ email: DLSUemail });
-    const passwordMatch = await bcrypt.compare(password, user.password);
+
 
     if (!user) return res.send(`<script>alert("No account found."); window.history.back();</script>`); 
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) return res.send(`<script>alert("Incorrect Password."); window.history.back();</script>`);
 
     console.log(`Redirecting to /prof_info?baseId=${user._id}`);

@@ -1,5 +1,6 @@
 const path = require('path');
 const User = require('../model/userRegistry');
+const bcrypt = require('bcrypt');
 
 // `renderSignupPage` is for rendering the page layout
 exports.renderSignupPage = (req, res) => {
@@ -9,7 +10,7 @@ exports.renderSignupPage = (req, res) => {
 // `signupUser` is for actual post logic for registrrations
 exports.signupUser = async (req, res) => {
   try {
-    const { fname, lname, role, DLSUemail, password } = req.body;
+    const { fname, lname, DLSUemail, password } = req.body;
 
     const existing = await User.findOne({ email: DLSUemail });
     if (existing) return res.send(` <script> alert("Email already registered.");window.history.back();</script>`);
@@ -18,7 +19,7 @@ exports.signupUser = async (req, res) => {
       first_name: fname,
       last_name: lname,
       email: DLSUemail,
-      role,
+      role: 'STUDENT',
       password
     });
 
