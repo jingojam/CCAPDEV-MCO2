@@ -12,163 +12,165 @@
 body {
   font-family: "Inter", sans-serif;
   background-color: rgb(237, 237, 237);
+  margin: 0;
+  padding: 0;
 }
 
-.container  {
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-content: center;
-
-    height: auto;
-
-    margin: 20px 50px 5px 50px;
-
+.container {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  height: auto;
+  margin: 20px 50px 5px 50px;
 }
 
 .container .create_options {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .container .create_options div {
-
-    color: rgb(53, 53, 53);
-
-    font-weight: bold;
-
-    border-radius: 10px;
+  color: rgb(53, 53, 53);
+  font-weight: bold;
+  border-radius: 10px;
+  padding: 10px 15px;
+  background-color: #f0f0f0;
+  cursor: pointer;
 }
 
+.container .create_options div:hover {
+  background-color: #e0e0e0;
+}
 
+/* Updated: Full-width background with centered 1-column layout */
 .container .create_content {
-    margin-top: 5px;
-    height: auto;
-    width: 100%;
-    align-self: center;
-    padding-bottom: 50px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    background-color: white;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    justify-content: center;
-    gap: 20px;
+  margin-top: 5px;
+  height: auto;
+  width: 100%;
+  align-self: center;
+  padding-bottom: 50px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: white;
+
+  /* Changed from grid (2 columns) to vertical flex */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centers content horizontally */
+  gap: 20px;
+  padding-top: 20px;
 }
 
+/* Filter Section - Centered input */
 .filter-section {
-
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  text-align: center;
 }
 
-.create_content .filter-section {
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.filter-section h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #333;
 }
 
 .filter-section input {
-
-    padding: 20px 25px;
-    font-size: 16px;
-    width: 230px;
-    height: 20px;
-    border-radius: 5px;
-    border: 1.5px solid #ccc;
+  padding: 20px 25px;
+  font-size: 16px;
+  width: 100%;
+  height: 20px;
+  border-radius: 5px;
+  border: 1.5px solid #ccc;
+  text-align: center;
+  outline: none;
 }
 
-
-select {
-    padding: 10px 15px 10px 15px;
-    font-size: 16px;
-    height: 40px;
-    width: 230px;
-    border-radius: 5px;
-    border: 0.5px solid #ccc;
+.filter-section input:focus {
+  border-color: steelblue;
+  box-shadow: 0 0 5px rgba(0, 0, 255, 0.1);
 }
 
+/* Labs Section - Full-width centered links */
 .labs_section {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-top: 0;
 }
 
 .labs_section .Labs {
-    width: 75%;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    margin: 10px;
-    padding: 5px 30px 5px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    word-break: break-word;
+  width: 100%;
+  max-width: 450px;
+  height: 70px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin: 8px 0;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: rgb(82, 82, 82);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+}
 
-    color: rgb(82, 82, 82);
+.labs_section .Labs:hover {
+  color: white;
+  background-color: steelblue;
+  border-color: steelblue;
 }
 
 .Labs h3 {
-
-    position: relative;
-    right: 0;
+  margin: 0;
+  font-size: 18px;
 }
 
-.labs_section a:hover {
-
-    color: white;
-
-    background-color: steelblue;
-}
-
+/* Responsive Design */
 @media (max-width: 768px) {
+  .container {
+    margin: 20px 15px 5px 15px;
+  }
 
-    .container .create_content {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 20px;
-        width: 100%;
-        box-sizing: border-box;
-    }
+  .container .create_options {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
 
-    .labs_section {
-        width: 100%;
-        box-sizing: border-box;
+  .container .create_options div {
+    text-align: center;
+    padding: 12px;
+  }
 
-        display: flex;
+  .container .create_content {
+    padding-bottom: 40px;
+    gap: 15px;
+  }
 
-        justify-content: center;
-    }
+  .filter-section,
+  .labs_section {
+    max-width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
 
-    .labs_section .Labs {
-        width: 95%;
-        box-sizing: border-box;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 15px; 
-    }
+  .filter-section input,
+  .labs_section .Labs {
+    width: 100%;
+  }
 
-    select {
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .container .create_options {
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
-    }
+  .labs_section .Labs {
+    max-width: none;
+    padding: 15px;
+  }
 }
-

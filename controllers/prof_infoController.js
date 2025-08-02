@@ -15,20 +15,20 @@ exports.renderInfoPage = async (req, res) => {
       `);
     }
 
-    const user = await User.findById(userId).lean(); 
+    const user = await User.findById(userId).lean();
+    const baseUser = await User.findById(baseId).lean();
 
-    // Get today's start (00:00:00)
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
 
     const reservations = await Reservation.find({
       reservedBy: userId,
-      lab_sched: { $gte: today }  // Only reservations for today and future
+      lab_sched: { $gte: today }
     }).populate('reservedBy', 'first_name last_name').lean();
 
     res.render('prof_info', {
       title: 'View Profile Info',
-      userRole: user.role,
+      userRole: baseUser.role,  
       isProfileInfo: true,
       userId,
       baseId,
