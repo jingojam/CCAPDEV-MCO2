@@ -25,27 +25,39 @@ exports.renderEditPage = async (req, res) => {
 };
 
 // POST for deleting user
+const Reservation = require('../model/reserveRegistry'); // import reservation model
+
 exports.deleteProfile = async (req, res) => {
-  try{
+  try {
     const baseId = req.query.baseId;
     const userId = req.query.userId;
 
-    if(!userId || !baseId){
+    if (!userId || !baseId) {
       return res.send(`<script>alert("Id's not found."); window.history.back();</script>`);
     }
 
+    // Step 1: Delete all reservations made by or associated with the user
+    await Reservation.deleteMany({
+      $or: [
+        { reservedBy: baseId },
+        { belongsTo: baseId }
+      ]
+    });
+
+    // Step 2: Delete the user
     const deleteUser = await User.findByIdAndDelete(baseId);
 
-    if(!deleteUser){
+    if (!deleteUser) {
       return res.send(`<script>alert("User can't be found."); window.history.back();</script>`);
     }
 
     return res.redirect('/auth_ref/Welcome.html');
-  } catch(err){
+  } catch (err) {
     console.log(err);
     return res.send(`<script>alert("Error deleting profile."); window.history.back();</script>`);
   }
 };
+
 
 // POST for editing info
 exports.saveEdit = async (req, res) => {
