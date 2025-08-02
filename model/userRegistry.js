@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -52,6 +53,19 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Reservation'
   }]
+});
+
+// Hashes Before Saving
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next(); // Skips the hash if the password ain't changed
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);

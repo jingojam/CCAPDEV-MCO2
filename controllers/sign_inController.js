@@ -1,5 +1,6 @@
 const path = require('path');
 const User = require('../model/userRegistry');
+const bcrypt = require('bcrypt');
 
 // `renderSigninPage` for GET requests
 exports.renderSigninPage = (req, res) => {
@@ -11,9 +12,10 @@ exports.signinUser = async (req, res) => {
   try {
     const { DLSUemail, password } = req.body;
     const user = await User.findOne({ email: DLSUemail });
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!user) return res.send(`<script>alert("No account found."); window.history.back();</script>`); 
-    if (user.password !== password) return res.send(`<script>alert("Incorrect Password."); window.history.back();</script>`);
+    if (!passwordMatch) return res.send(`<script>alert("Incorrect Password."); window.history.back();</script>`);
 
     console.log(`Redirecting to /prof_info?baseId=${user._id}`);
     res.redirect(`/home?userId=${user._id}&baseId=${user._id}`);
