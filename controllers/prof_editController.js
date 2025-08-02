@@ -37,12 +37,7 @@ exports.deleteProfile = async (req, res) => {
     }
 
     // Step 1: Delete all reservations made by or associated with the user
-    await Reservation.deleteMany({
-      $or: [
-        { reservedBy: baseId },
-        { belongsTo: baseId }
-      ]
-    });
+    await Reservation.deleteMany({belongsTo: baseId});
 
     // Step 2: Delete the user
     const deleteUser = await User.findByIdAndDelete(baseId);
