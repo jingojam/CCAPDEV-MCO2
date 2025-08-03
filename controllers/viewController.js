@@ -6,21 +6,25 @@ exports.renderViewPage = async (req, res) => {
     const baseId = req.query.baseId;
     const userId = req.query.userId;
 
-    if(!userId || !baseId){
+    if (!userId || !baseId) {
       return res.status(400).send('Ids not found');
     }
 
     const user = await User.findById(baseId).lean();
     const now = new Date();
 
-    const reservations = await Reservation.find({ reservedBy: baseId }).lean();
+    
+    const reservations = await Reservation
+      .find({ reservedBy: baseId })
+      .sort({ lab_sched: 1, startTime: 1 })
+      .lean();
 
     const currentReservations = [];
     const completedReservations = [];
 
     reservations.forEach((res) => {
       const reservationDate = new Date(res.lab_sched);
-      const reservationEndTime = parseTime(res.endTime); // "1400" -> { hours: 14, minutes: 0 }
+      const reservationEndTime = parseTime(res.endTime);
 
       const combinedEnd = new Date(reservationDate);
       combinedEnd.setUTCHours(reservationEndTime.hours);
@@ -60,7 +64,7 @@ exports.renderViewPage = async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    return res.send(` <script> alert("Server Error.");window.history.back();</script>`);
+    return res.send(`<script>alert("Server Error.");window.history.back();</script>`);
   }
 };
 

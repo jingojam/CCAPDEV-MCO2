@@ -21,8 +21,8 @@ exports.renderEditPage = async (req, res) => {
     const userId = req.query.userId;
     const baseId = req.query.baseId;
 
-    if(!userId || !baseId){
-      res.status(400).send('Ids missing in query');
+    if (!userId || !baseId) {
+      return res.status(400).send('Ids missing in query');
     }
 
     const user = await User.findById(baseId).lean();
@@ -42,8 +42,8 @@ exports.renderEditPage = async (req, res) => {
     res.render('res_edit', {
       title: 'Edit - Reservation',
       isResEdit: true,
-      userId: userId,
-      baseId: baseId,
+      userId,
+      baseId,
       user,
       userRole: user.role,
       reservationId,
@@ -72,45 +72,62 @@ exports.submitEdit = async (req, res) => {
     const current = await Resv.findById(reservationId).lean();
     if (!current) return res.status(404).json({ message: 'Reservation not found' });
 
-    const conflict = await Resv.findOne({
+    const { lab_sched, lab_name, account_id } = current;
+
+    // Check for other reservations by same student on same day that overlap
+    const studentConflict = await Resv.findOne({
       _id: { $ne: reservationId },
-      lab_name: current.lab_name,
-      lab_sched: current.lab_sched,
+      account_id: account_id,
+      lab_sched: lab_sched,
+      $or: [
+        { startTime: { $lt: timeEnd }, endTime: { $gt: timeStart } }
+      ]
+    });
+
+    if (studentConflict) {
+      return res.status(409).json({
+        message: 'There is a reservation that overlaps on this date and time.'
+      });
+    }
+
+    // Check for seat+lab+time conflict with other users
+    const seatConflict = await Resv.findOne({
+      _id: { $ne: reservationId },
+      lab_sched: lab_sched,
+      lab_name: lab_name,
       seat: seat,
       $or: [
         { startTime: { $lt: timeEnd }, endTime: { $gt: timeStart } }
       ]
     });
 
-    if (conflict) {
-      return res.status(409).json({ message: 'Conflict detected: Another reservation exists at that time and seat.' });
+    if (seatConflict) {
+      return res.status(409).json({
+        message: `Seat ${seat} in ${lab_name} is already taken on that time.`
+      });
     }
 
     const reservation = await Resv.findById(reservationId);
-
-    if(!reservation){
+    if (!reservation) {
       return res.status(404).json({ message: 'Reservation not found.' });
     }
 
     const now = Date.now();
-    const request = reservation.lab_sched; // already a Date object
-    const start = reservation.startTime;   // e.g., "0900"
+    const request = new Date(reservation.lab_sched);
+    const start = reservation.startTime;
 
-    //convert "0900" to actual time on lab_sched day
     let hours = parseInt(start.substring(0, 2), 10);
     let minutes = parseInt(start.substring(2, 4), 10);
     request.setHours(hours);
     request.setMinutes(minutes);
     request.setSeconds(0, 0);
-    
 
-    let canEdit = false;
     const oneHourBefore = request.getTime() - 60 * 60 * 1000;
-    canEdit = now <= oneHourBefore;
+    const canEdit = now <= oneHourBefore;
 
-    if(!canEdit){
-      return res.status(403).json({ 
-        message: "You are no longer allowed to edit this reservation." 
+    if (!canEdit) {
+      return res.status(403).json({
+        message: "You cannot edit this reservation anymore."
       });
     }
 
@@ -127,16 +144,16 @@ exports.submitEdit = async (req, res) => {
     res.status(500).json({ message: 'Something went wrong while saving.' });
   }
 };
+
 exports.deleteReservation = async (req, res) => {
   try {
     const reservationId = req.params.reservationId;
-    const baseId        = req.query.baseId;          // make sure the link passes this!
+    const baseId = req.query.baseId;
 
     if (!reservationId || !baseId) {
       return res.status(400).json({ message: 'Missing required parameters.' });
     }
 
-    // 1) Fetch user and reservation
     const [user, reservation] = await Promise.all([
       User.findById(baseId).lean(),
       Resv.findById(reservationId).lean()
@@ -146,9 +163,8 @@ exports.deleteReservation = async (req, res) => {
       return res.status(404).json({ message: 'User or Reservation not found.' });
     }
 
-    // 2) Build the Date object for the reservation’s start time
-    const startStr   = reservation.startTime;               // e.g. "0930"
-    const schedDate  = new Date(reservation.lab_sched);     // ensure Date
+    const startStr = reservation.startTime;
+    const schedDate = new Date(reservation.lab_sched);
     schedDate.setHours(+startStr.slice(0, 2));
     schedDate.setMinutes(+startStr.slice(2));
     schedDate.setSeconds(0, 0);
@@ -157,10 +173,8 @@ exports.deleteReservation = async (req, res) => {
     let canDelete = false;
 
     if (user.role === 'TECHNICIAN') {
-      // may delete up to 10 min AFTER start
       canDelete = now <= schedDate.getTime() + 10 * 60 * 1000;
     } else if (user.role === 'STUDENT') {
-      // may delete until 1 h BEFORE start
       canDelete = now <= schedDate.getTime() - 60 * 60 * 1000;
     }
 
@@ -170,11 +184,10 @@ exports.deleteReservation = async (req, res) => {
 
     await Resv.findByIdAndDelete(reservationId);
 
-
     return res.json({ message: 'Reservation deleted successfully.' });
 
   } catch (err) {
-    console.error(' deleteReservation error:', err);
+    console.error('deleteReservation error:', err);
     return res.status(500).json({ message: 'Something went wrong while deleting.' });
   }
 };
