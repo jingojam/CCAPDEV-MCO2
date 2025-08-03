@@ -1,7 +1,10 @@
+// app.js
+
 const express = require('express');
 const hbars = require('express-handlebars');
 const path = require('path');
 const mongoose = require('mongoose');
+const session = require('express-session');
 //TODO: Fix prof_info
 const app = express();
 const port = 3000;
@@ -74,6 +77,27 @@ mongoose.connect(mongoURI)
 
 const User = require('./model/userRegistry');
 
+//session setup
+app.use(session({
+  secret: 'Gx7q!9Lm@2vK8#wR4%nP&cS5*aE9$vN2', //secret key
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: false, // Set to true if using HTTPS
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Session destroy error:', err);
+    }
+    res.clearCookie('connect.sid');     // remove session cookie
+    res.redirect('/sign_in');
+  });
+});
+
 // Welcome Page
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'auth_ref', 'Welcome.html'));
@@ -106,7 +130,7 @@ app.get('/user/:id/image', async (req, res) => {
         res.send(user.profileImage.data);
     } catch (err) {
         console.error(err);
-         return res.send(`<script>alert("Error loading profile image.); window.history.back();</script>`);
+         return res.send(`<script>alert("Error loading profile image."); window.history.back();</script>`);
     }
 });
 
