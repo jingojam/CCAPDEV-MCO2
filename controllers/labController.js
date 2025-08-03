@@ -1,7 +1,7 @@
+
 const User = require('../model/userRegistry');
 const Lab = require('../model/labRegistry');
 const Reservation = require('../model/reserveRegistry');
-
 
 exports.renderLabPage = async (req, res) => {
   try {
@@ -12,12 +12,11 @@ exports.renderLabPage = async (req, res) => {
     const lab = await Lab.findOne({ lab_id: id }).lean();
     if (!lab) {
       return res.send(`
-      <script>
-        alert("Lab with ID ${id} not found.");
-        window.history.back();
-      </script>
-    `);
-      return;
+        <script>
+          alert("Lab with ID ${id} not found.");
+          window.history.back();
+        </script>
+      `);
     }
 
     let user = null;
@@ -29,9 +28,17 @@ exports.renderLabPage = async (req, res) => {
       }
     }
 
-    const days = lab.lab_sched?.map(d => new Date(d).toDateString()) || [];
 
-    // The labels can be changed based on if we want AM/PM or Military Time
+    const days = Array.from({ length: 7 }, (_, i) => {
+      const baseDate = new Date(); // Current date
+
+      baseDate.setDate(baseDate.getDate() + i + 1);
+
+      return baseDate.toLocaleDateString('en-CA');
+    });
+
+
+
     const startTimes = [
       { value: "0900", label: "09:00" },
       { value: "0930", label: "09:30" },
@@ -72,22 +79,19 @@ exports.renderLabPage = async (req, res) => {
       reserveText: seat.availability ? 'Reserve' : 'Unavailable'
     }));
 
-    // Fetch existing reservations for this lab
     const reservations = await Reservation.find({ laboratory: lab.lab_name });
 
-    
     res.render('laboratory', {
-      userRole: user.role,
+      userRole: user?.role,
       labId: id,
-      userId: userId,
-      baseId: baseId,
+      userId,
+      baseId,
       lab,
       days,
       startTimes,
       endTimes,
       seats,
       isLab: true,
-      baseId,
       user,
       reservations
     });
