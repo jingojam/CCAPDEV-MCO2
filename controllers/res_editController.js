@@ -1,5 +1,6 @@
 const User = require('../model/userRegistry');
 const Resv = require('../model/reserveRegistry');
+const ErrorList = require('../model/errorRegistry');
 
 function generateTimeOptions(startHour, endHour, includeHalfHour, isEnd = false) {
   const times = [];
@@ -21,12 +22,16 @@ exports.renderEditPage = async (req, res) => {
     const userId = req.query.userId;
     const baseId = req.query.baseId;
 
-    if (!userId || !baseId) {
-      return res.status(400).send('Ids missing in query');
+    if (!userId || !baseId || !reservationId) {
+      throw new Error("Missing user ID or reservation ID");
     }
 
     const user = await User.findById(baseId).lean();
     const resv = await Resv.findById(reservationId).lean();
+
+    if (!user || !resv) {
+      throw new Error("User or Reservation not found");
+    }
 
     const selectedDate = new Date(resv.lab_sched).toISOString().split('T')[0];
     const selectedStart = resv.startTime;
@@ -60,6 +65,12 @@ exports.renderEditPage = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
+    await ErrorList.create({
+      error: "Error rendering reservation edit page.",
+      stack: err.stack,
+      route: req.originalUrl,
+      user: req.query.baseId 
+    });
     res.status(500).send('Server Error');
   }
 };
@@ -70,11 +81,12 @@ exports.submitEdit = async (req, res) => {
     const reservationId = req.params.reservationId;
 
     const current = await Resv.findById(reservationId).lean();
-    if (!current) return res.status(404).json({ message: 'Reservation not found' });
+    if (!current) {
+      throw new Error("Reservation not found.");
+    }
 
     const { lab_sched, lab_name, account_id } = current;
 
-    // Check for other reservations by same student on same day that overlap
     const studentConflict = await Resv.findOne({
       _id: { $ne: reservationId },
       account_id: account_id,
@@ -85,12 +97,9 @@ exports.submitEdit = async (req, res) => {
     });
 
     if (studentConflict) {
-      return res.status(409).json({
-        message: 'There is a reservation that overlaps on this date and time.'
-      });
+      throw new Error('There is a reservation that overlaps on this date and time.');
     }
 
-    // Check for seat+lab+time conflict with other users
     const seatConflict = await Resv.findOne({
       _id: { $ne: reservationId },
       lab_sched: lab_sched,
@@ -102,14 +111,12 @@ exports.submitEdit = async (req, res) => {
     });
 
     if (seatConflict) {
-      return res.status(409).json({
-        message: `Seat ${seat} in ${lab_name} is already taken on that time.`
-      });
+      throw new Error(`Seat ${seat} in ${lab_name} is already taken on that time.`);
     }
 
     const reservation = await Resv.findById(reservationId);
     if (!reservation) {
-      return res.status(404).json({ message: 'Reservation not found.' });
+      throw new Error("Reservation not found during update.");
     }
 
     const now = Date.now();
@@ -126,9 +133,7 @@ exports.submitEdit = async (req, res) => {
     const canEdit = now <= oneHourBefore;
 
     if (!canEdit) {
-      return res.status(403).json({
-        message: "You cannot edit this reservation anymore."
-      });
+      throw new Error("You cannot edit this reservation anymore.");
     }
 
     await Resv.findByIdAndUpdate(reservationId, {
@@ -141,9 +146,23 @@ exports.submitEdit = async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Something went wrong while saving.' });
+    await ErrorList.create({
+      error: err.message,
+      stack: err.stack,
+      route: req.originalUrl,
+      user: req.body.baseId
+    });
+
+    const statusCode =
+      err.message.includes('overlaps') || err.message.includes('taken') ? 409 :
+      err.message.includes('edit this reservation anymore') ? 403 :
+      err.message.includes('not found') ? 404 :
+      500;
+
+    res.status(statusCode).json({ message: err.message });
   }
 };
+
 
 exports.deleteReservation = async (req, res) => {
   try {
@@ -151,7 +170,7 @@ exports.deleteReservation = async (req, res) => {
     const baseId = req.query.baseId;
 
     if (!reservationId || !baseId) {
-      return res.status(400).json({ message: 'Missing required parameters.' });
+      throw new Error("Missing reservationId or baseId.");
     }
 
     const [user, reservation] = await Promise.all([
@@ -160,7 +179,7 @@ exports.deleteReservation = async (req, res) => {
     ]);
 
     if (!user || !reservation) {
-      return res.status(404).json({ message: 'User or Reservation not found.' });
+      throw new Error("User or Reservation not found.");
     }
 
     const startStr = reservation.startTime;
@@ -188,6 +207,12 @@ exports.deleteReservation = async (req, res) => {
 
   } catch (err) {
     console.error('deleteReservation error:', err);
+    await ErrorList.create({
+      error: "Error deleting reservation.",
+      stack: err.stack,
+      route: req.originalUrl,
+      user: req.query.baseId
+    });
     return res.status(500).json({ message: 'Something went wrong while deleting.' });
   }
 };

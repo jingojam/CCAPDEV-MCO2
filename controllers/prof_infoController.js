@@ -1,22 +1,23 @@
 const User = require('../model/userRegistry'); 
 const Reservation = require('../model/reserveRegistry');
+const ErrorList = require('../model/errorRegistry');
 
 exports.renderInfoPage = async (req, res) => {
   try {
     const baseId = req.query.baseId;
     const userId = req.query.userId;
+    const errorMessage = "Missing or invalid ID.";
 
-    if (!userId || !baseId) {
-      return res.send(`
-        <script>
-          alert("Missing UserID in query.");
-          window.history.back();
-        </script>
-      `);
+    if (!userId || !(/^[0-9a-fA-F]{24}$/.test(userId)) || !baseId || !(/^[0-9a-fA-F]{24}$/.test(baseId))) {
+      throw new Error(errorMessage);
     }
 
     const user = await User.findById(userId).lean();
     const baseUser = await User.findById(baseId).lean();
+
+    if (!user || !baseUser) {
+      throw new Error(errorMessage);
+    }
 
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
@@ -37,6 +38,12 @@ exports.renderInfoPage = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
+    await ErrorList.create({
+      error: "Error loading profile ID.",
+      stack: err.stack,
+      route: req.originalUrl,
+      user: req.query.baseId
+    });
     return res.send(`
       <script>
         alert("Error loading profile ID.");

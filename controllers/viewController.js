@@ -1,5 +1,6 @@
 const User = require('../model/userRegistry');
 const Reservation = require('../model/reserveRegistry');
+const ErrorList = require('../model/errorRegistry');
 
 exports.renderViewPage = async (req, res) => {
   try {
@@ -7,13 +8,26 @@ exports.renderViewPage = async (req, res) => {
     const userId = req.query.userId;
 
     if (!userId || !baseId) {
+      await ErrorList.create({
+        error: 'Missing userId or baseId in request query',
+        route: req.originalUrl,
+        userEmail: 'unknown'
+      });
       return res.status(400).send('Ids not found');
     }
 
     const user = await User.findById(baseId).lean();
+    if (!user) {
+      await ErrorList.create({
+        error: `User with baseId ${baseId} not found`,
+        route: req.originalUrl,
+        userEmail: 'unknown'
+      });
+      return res.status(404).send('User not found');
+    }
+
     const now = new Date();
 
-    
     const reservations = await Reservation
       .find({ reservedBy: baseId })
       .sort({ lab_sched: 1, startTime: 1 })
@@ -64,7 +78,13 @@ exports.renderViewPage = async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    return res.send(`<script>alert("Server Error.");window.history.back();</script>`);
+    await ErrorList.create({
+      error: err.message,
+      stack: err.stack,
+      route: req.originalUrl,
+      userEmail: req.query?.userId || 'unknown'
+    });
+    return res.send(`<script>alert("Server Error."); window.history.back();</script>`);
   }
 };
 

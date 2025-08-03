@@ -3,10 +3,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const cancelButton = document.getElementById("cancel-button");
 
   function getFormData() {
+    const urlParams = new URLSearchParams(window.location.search);
     return {
       timeStart: document.getElementById("detail-time-start").value,
       timeEnd: document.getElementById("detail-time-end").value,
-      seat: document.getElementById("detail-seat").value
+      seat: document.getElementById("detail-seat").value,
+      baseId: urlParams.get("baseId"),
+      userId: urlParams.get("userId"),
+      reservationId: document.getElementById("reservation-id")?.value || null
     };
   }
 
@@ -38,8 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           } else {
             Swal.fire('Saved!', data.message, 'success').then(() => {
-              const userId = new URLSearchParams(window.location.search).get('userId');
-              const baseId = new URLSearchParams(window.location.search).get('baseId');
+              const userId = formData.userId;
+              const baseId = formData.baseId;
               window.location.href = `/view?userId=${userId}&baseId=${baseId}`;
             });
           }
@@ -61,8 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }).then((result) => {
       if (result.isConfirmed) {
         const reservationId = document.getElementById('reservation-id').value;
-        const userId = new URLSearchParams(window.location.search).get('userId');
-        const baseId = new URLSearchParams(window.location.search).get('baseId');
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('userId');
+        const baseId = urlParams.get('baseId');
 
         fetch(`/res_edit/${reservationId}/delete?userId=${userId}&baseId=${baseId}`, {
           method: 'POST',
